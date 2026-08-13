@@ -25,6 +25,38 @@
     return "";
   }
 
+  function shopList(place) {
+    if (!place.shops || !place.shops.length) return "";
+    return `<ul class="shops">${place.shops
+      .map((s) => {
+        const name = s.link
+          ? `<a href="${s.link}" target="_blank" rel="noopener">${s.name}</a>`
+          : `<strong>${s.name}</strong>`;
+        return `<li>${name} — ${s.note}</li>`;
+      })
+      .join("")}</ul>`;
+  }
+
+  function extraLinksHtml(place) {
+    if (!place.extraLinks || !place.extraLinks.length) return "";
+    return place.extraLinks
+      .map(
+        (l) =>
+          `<a class="card-link" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`
+      )
+      .join(" ");
+  }
+
+  function confidenceBadge(place) {
+    if (place.confidence === "confirmed") {
+      return `<span class="badge badge-confirmed">Confirmed</span>`;
+    }
+    if (place.confidence === "likely") {
+      return `<span class="badge badge-likely">Likely</span>`;
+    }
+    return "";
+  }
+
   function popupHtml(place) {
     const warn = touristLabel(place);
     const closed = place.closed ? `<span class="badge badge-closed">Closed</span>` : "";
@@ -32,27 +64,22 @@
     const link = place.link
       ? `<a href="${place.link}" target="_blank" rel="noopener">${place.linkLabel || "Link"}</a>`
       : "";
-    const shops =
-      place.shops && place.shops.length
-        ? `<ul class="shops">${place.shops
-            .map(
-              (s) =>
-                `<li><a href="${s.link}" target="_blank" rel="noopener">${s.name}</a> — ${s.note}</li>`
-            )
-            .join("")}</ul>`
-        : "";
     return `
       <div class="popup">
         <div class="badges">
           <span class="badge badge-cat ${place.category}">${CAT_LABEL[place.category]}</span>
+          ${confidenceBadge(place)}
           ${warnBadge}${closed}
         </div>
         <h3>${place.name}</h3>
         <p class="meta">${place.neighborhood}${place.address ? " · " + place.address : ""}</p>
+        ${place.confidenceNote ? `<p class="confidence">${place.confidenceNote}</p>` : ""}
         <p>${place.takeaway}</p>
         ${place.walk ? `<p class="walk">${place.walk}</p>` : ""}
-        ${shops}
+        ${shopList(place)}
+        ${place.unnamed ? `<p class="unnamed">${place.unnamed}</p>` : ""}
         ${link}
+        ${extraLinksHtml(place)}
       </div>
     `;
   }
@@ -186,15 +213,6 @@
     wrap.innerHTML = visiblePlaces()
       .map((place) => {
         const warn = touristLabel(place);
-        const shops =
-          place.shops && place.shops.length
-            ? `<ul class="shops">${place.shops
-                .map(
-                  (s) =>
-                    `<li><a href="${s.link}" target="_blank" rel="noopener">${s.name}</a> — ${s.note}</li>`
-                )
-                .join("")}</ul>`
-            : "";
         const link = place.link
           ? `<a class="card-link" href="${place.link}" target="_blank" rel="noopener">${place.linkLabel || "Source"}</a>`
           : "";
@@ -204,14 +222,18 @@
               <h3>${place.name}</h3>
               <div class="badges">
                 <span class="badge badge-cat ${place.category}">${CAT_LABEL[place.category]}</span>
+                ${confidenceBadge(place)}
                 ${warn ? `<span class="badge badge-warn">${warn}</span>` : ""}
                 ${place.closed ? `<span class="badge badge-closed">Closed</span>` : ""}
               </div>
             </div>
             <p class="meta">${place.neighborhood}${place.walk ? " · " + place.walk : ""}</p>
+            ${place.confidenceNote ? `<p class="confidence">${place.confidenceNote}</p>` : ""}
             <p class="takeaway">${place.takeaway}</p>
-            ${shops}
+            ${shopList(place)}
+            ${place.unnamed ? `<p class="unnamed">${place.unnamed}</p>` : ""}
             ${link}
+            ${extraLinksHtml(place)}
           </article>
         `;
       })
