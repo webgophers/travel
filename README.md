@@ -14,6 +14,14 @@ Then open [http://localhost:8080](http://localhost:8080).
 
 Or open `index.html` directly. Map tiles need a network connection (OpenStreetMap / CARTO via Leaflet). No API key, no build step, no booking.
 
+## Live site (GitHub Pages)
+
+Intended URL: [https://webgophers.github.io/travel/](https://webgophers.github.io/travel/)
+
+`index.html` is at the repo root. A GitHub Actions workflow (`.github/workflows/pages.yml`) deploys that root (plus `css/`, `js/`, `docs/`) on push to `main` or this guide branch.
+
+This repository is **private**. GitHub Pages on a private repo needs GitHub Pro (or a public repo). The workflow cannot flip repo visibility; enable Pages after the repo is public or the account has Pro, then re-run **Deploy GitHub Pages** under Actions.
+
 ## What’s on the page
 
 - Leaflet map centered so Sol/Gran Vía and Chamberí/Malasaña are both in view
