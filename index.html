@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Madrid for Jeremy Turner — Thompson Madrid guide</title>
+    <meta
+      name="description"
+      content="Practical Madrid neighborhood guide for Jeremy Turner, based at Thompson Madrid. Markets, food, and Chamberí/Malasaña — not San Miguel."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Outfit:wght@400;500;600;650&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23c4a035' width='32' height='32' rx='8'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-size='16'%3E⌂%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <a class="skip" href="#list">Skip to list</a>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Madrid · Chamberí / Malasaña / Sol</p>
+        <h1>A short, honest map for Jeremy</h1>
+        <p class="lede">
+          Working markets, vermouth, Ponzano. Not San Miguel. Pins and cards stay in sync.
+        </p>
+      </div>
+      <div class="hotel-chip">
+        <strong>Thompson Madrid</strong>
+        <span>Plaza del Carmen · Sol / Gran Vía</span>
+        <a href="https://www.hyatt.com/hotel/spain/thompson-madrid/madrp" target="_blank" rel="noopener">Hotel page</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="map-panel" aria-label="Madrid map">
+        <div class="map-toolbar">
+          <div class="filters" id="filters" role="toolbar" aria-label="Category filters"></div>
+          <button class="ghost" id="reset-view" type="button">Reset view</button>
+          <div class="legend" aria-hidden="true">
+            <span><i class="stay"></i>Stay</span>
+            <span><i class="food"></i>Food</span>
+            <span><i class="cafe"></i>Cafe</span>
+            <span><i class="markets"></i>Markets</span>
+            <span><i class="entertainment"></i>Entertainment</span>
+          </div>
+        </div>
+        <div id="map" role="application" aria-label="Interactive map of recommended Madrid spots"></div>
+      </section>
+
+      <div class="content" id="list">
+        <section class="panel" id="route">
+          <h2>DIY half-day food route</h2>
+          <p class="kicker">
+            Covers most of what Culinary Backstreets / Flavours / Walk and Eat sell. Pay for a tour only if you want the guided storytelling.
+          </p>
+          <div class="route" id="route-steps"></div>
+          <p class="note">
+            Weekday mornings for markets. Ardosa before ~7pm. Ponzano is loud Thu–Sat.
+          </p>
+        </section>
+
+        <section class="panel">
+          <h2 id="places-heading">Places</h2>
+          <p class="kicker" id="places-count"></p>
+          <div class="cards" id="cards"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Paid tours (optional)</h2>
+          <p class="kicker">
+            Sidebar only. DIY above hits the same neighborhoods. Stop names beyond what’s published are not listed.
+          </p>
+          <div class="tours" id="tours"></div>
+        </section>
+
+        <section class="panel skip-box">
+          <h2>Skip</h2>
+          <ul>
+            <li>Mercado de San Miguel — tourist food hall, not a local secret.</li>
+            <li>Default Plaza Mayor “must-do” framing — fine to walk through, not the point of this map.</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Built as a static page for Jeremy Turner’s Madrid stay. Coordinates from provided research, Wikipedia, or OpenStreetMap Nominatim — omitted rather than guessed. Map tiles: OpenStreetMap / CARTO. Walking times are rough from Thompson Madrid.
+      </p>
+    </footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
