@@ -16,7 +16,14 @@ Or open `index.html` directly. Map tiles need a network connection (OpenStreetMa
 
 Intended URL: [https://webgophers.github.io/travel/](https://webgophers.github.io/travel/)
 
-`index.html` is at the repo root. GitHub Actions (`.github/workflows/pages.yml`) deploys that root on push to `main` or the guide branch. The repo must be **public** (or GitHub Pro) for Pages to serve.
+`index.html` is at the repo root. The repo is **public**. Creating the Pages site still needs one owner click (Actions cannot enable Pages: `403 Resource not accessible by integration`):
+
+1. Open **Settings → Pages**
+2. Build and deployment → Source: **Deploy from a branch**
+3. Branch: **main**, folder: **/ (root)**
+4. Save
+
+Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages**. After that, the map is at the URL above.
 
 ## What’s on the page
 
