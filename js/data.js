@@ -1,5 +1,5 @@
-/* Madrid guide data for Jeremy Turner.
- * Coordinates: user-provided where given; otherwise Wikipedia or OSM Nominatim.
+/* Madrid guide data.
+ * Coordinates: listed where given; otherwise Wikipedia or OSM Nominatim.
  * Do not add places, quotes, or prices that are not in this file.
  */
 window.GUIDE = {
@@ -14,11 +14,9 @@ window.GUIDE = {
   },
   categories: [
     { id: "stay", label: "Stay" },
-    { id: "food", label: "Food" },
-    { id: "cafe", label: "Cafe" },
+    { id: "food", label: "Eat" },
     { id: "markets", label: "Markets" },
-    { id: "shops", label: "Shops" },
-    { id: "entertainment", label: "Entertainment" },
+    { id: "entertainment", label: "See" },
   ],
   places: [
     {
@@ -29,7 +27,7 @@ window.GUIDE = {
       address: "Plaza del Carmen, s/n, 28013 Madrid",
       lat: 40.41857,
       lng: -3.70267,
-      takeaway: "Hyatt / Thompson Hotels. Home base — everything else is measured from here.",
+      takeaway: "Hyatt / Thompson Hotels. Home base — walking notes are from here.",
       link: "https://www.hyatt.com/hotel/spain/thompson-madrid/madrp",
       linkLabel: "Hyatt listing",
       walk: "You are here",
@@ -220,7 +218,7 @@ window.GUIDE = {
     {
       id: "comercial",
       name: "Café Comercial",
-      category: "cafe",
+      category: "food",
       neighborhood: "Glorieta de Bilbao",
       address: "Glorieta de Bilbao, 7, 28004 Madrid",
       lat: 40.42871,
@@ -382,27 +380,27 @@ window.GUIDE = {
       when: "Morning",
       placeId: "chamberi-market",
       altId: "barcelo",
-      text: "Mercado de Chamberí (or Barceló). Jamón/queso stalls. Weekday mornings are the working-market hours.",
+      text: "Chamberí market (or Barceló). Jamón and cheese. Weekday mornings.",
     },
     {
       step: 2,
       when: "Coffee",
       placeId: "comercial",
-      text: "Café Comercial if you’re nearby (Glorieta de Bilbao). Historic, a bit touristy since reopening — fine as a coffee stop, not a secret.",
+      text: "Café Comercial at Bilbao. Historic, a bit touristy. Fine for coffee.",
     },
     {
       step: 3,
-      when: "Lunch / vermouth",
+      when: "Lunch",
       placeId: "ardosa",
       altId: "angel-sierra",
-      text: "La Ardosa or Ángel Sierra. Go early (before ~7pm at Ardosa). Both are known; Ardosa especially.",
+      text: "La Ardosa or Ángel Sierra. Go early — Ardosa before ~7pm.",
     },
     {
       step: 4,
       when: "Evening",
       placeId: "el-doble",
       altId: "ponzano",
-      text: "Ponzano starting at El Doble. Standing beers and conservas, then wander the street if the energy is right.",
+      text: "Start at El Doble, then wander Ponzano if you want.",
     },
   ],
   tours: [

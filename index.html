@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Madrid for Jeremy Turner — Thompson Madrid guide</title>
+    <title>Madrid trip guide — Thompson Madrid</title>
     <meta
       name="description"
-      content="Practical Madrid neighborhood guide for Jeremy Turner, based at Thompson Madrid. Markets, food, and Chamberí/Malasaña — not San Miguel."
+      content="A practical Madrid neighborhood guide based at Thompson Madrid. Markets, food, and Chamberí/Malasaña — not San Miguel."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Outfit:wght@400;500;600;650&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,600&family=Outfit:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -24,77 +24,57 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23c4a035' width='32' height='32' rx='8'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-size='16'%3E⌂%3C/text%3E%3C/svg%3E" />
   </head>
   <body>
-    <a class="skip" href="#list">Skip to list</a>
+    <a class="skip" href="#places">Skip to places</a>
+
     <header class="site-header">
-      <div>
-        <p class="eyebrow">Madrid · Chamberí / Malasaña / Sol</p>
-        <h1>A short, honest map for Jeremy</h1>
-        <p class="lede">
-          Working markets, vermouth, Ponzano. Not San Miguel. Pins and cards stay in sync.
-        </p>
-      </div>
+      <p class="eyebrow">Madrid · Sol / Chamberí / Malasaña</p>
+      <h1>A short map for a few good days</h1>
+      <p class="lede">Working markets, vermouth, Ponzano. Not San Miguel. Tap a step or a pin.</p>
       <div class="hotel-chip">
+        <span class="hotel-chip__label">Stay</span>
         <strong>Thompson Madrid</strong>
         <span>Plaza del Carmen · Sol / Gran Vía</span>
         <a href="https://www.hyatt.com/hotel/spain/thompson-madrid/madrp" target="_blank" rel="noopener">Hotel page</a>
       </div>
     </header>
 
-    <main class="layout">
+    <main class="page">
+      <section class="panel" id="route">
+        <h2>Half-day food walk</h2>
+        <p class="kicker">Do this yourself. A paid tour is only worth it if you want the stories.</p>
+        <div class="route" id="route-steps"></div>
+        <p class="note">Markets: weekday mornings. Ardosa: before ~7pm. Ponzano: loud Thu–Sat.</p>
+      </section>
+
       <section class="map-panel" aria-label="Madrid map">
         <div class="map-toolbar">
           <div class="filters" id="filters" role="toolbar" aria-label="Category filters"></div>
-          <button class="ghost" id="reset-view" type="button">Reset view</button>
-          <div class="legend" aria-hidden="true">
-            <span><i class="stay"></i>Stay</span>
-            <span><i class="food"></i>Food</span>
-            <span><i class="cafe"></i>Cafe</span>
-            <span><i class="markets"></i>Markets</span>
-            <span><i class="entertainment"></i>Entertainment</span>
-          </div>
+          <button class="ghost" id="reset-view" type="button">Reset map</button>
         </div>
         <div id="map" role="application" aria-label="Interactive map of recommended Madrid spots"></div>
       </section>
 
-      <div class="content" id="list">
-        <section class="panel" id="route">
-          <h2>DIY half-day food route</h2>
-          <p class="kicker">
-            Covers most of what Culinary Backstreets / Flavours / Walk and Eat sell. Pay for a tour only if you want the guided storytelling.
-          </p>
-          <div class="route" id="route-steps"></div>
-          <p class="note">
-            Weekday mornings for markets. Ardosa before ~7pm. Ponzano is loud Thu–Sat.
-          </p>
-        </section>
+      <section class="panel" id="places">
+        <h2 id="places-heading">Places</h2>
+        <p class="kicker" id="places-count"></p>
+        <div class="cards" id="cards"></div>
+      </section>
 
-        <section class="panel">
-          <h2 id="places-heading">Places</h2>
-          <p class="kicker" id="places-count"></p>
-          <div class="cards" id="cards"></div>
-        </section>
+      <section class="panel skip-box">
+        <h2>Skip</h2>
+        <p>Mercado de San Miguel — tourist food hall, not a local secret. Plaza Mayor is fine to walk through; it is not the point of this map.</p>
+      </section>
 
-        <section class="panel">
-          <h2>Paid tours (optional)</h2>
-          <p class="kicker">
-            Sidebar only. DIY above hits the same neighborhoods. Stop names beyond what’s published are not listed.
-          </p>
-          <div class="tours" id="tours"></div>
-        </section>
-
-        <section class="panel skip-box">
-          <h2>Skip</h2>
-          <ul>
-            <li>Mercado de San Miguel — tourist food hall, not a local secret.</li>
-            <li>Default Plaza Mayor “must-do” framing — fine to walk through, not the point of this map.</li>
-          </ul>
-        </section>
-      </div>
+      <section class="panel" id="tours-panel">
+        <h2>Paid tours</h2>
+        <p class="kicker">Optional. The walk above covers the same neighborhoods. Unpublished stops are not listed.</p>
+        <div class="tours" id="tours"></div>
+      </section>
     </main>
 
     <footer class="site-footer">
       <p>
-        Built as a static page for Jeremy Turner’s Madrid stay. Coordinates from provided research, Wikipedia, or OpenStreetMap Nominatim — omitted rather than guessed. Map tiles: OpenStreetMap / CARTO. Walking times are rough from Thompson Madrid.
+        Coordinates from listed research, Wikipedia, or OpenStreetMap. Walking times are rough from Thompson Madrid. Map: OpenStreetMap / CARTO.
       </p>
     </footer>
 

@@ -2,10 +2,10 @@
   const { places, categories, map: mapConfig, route, tours } = window.GUIDE;
   const CAT_LABEL = Object.fromEntries(categories.map((c) => [c.id, c.label]));
 
-  const map = L.map("map", { scrollWheelZoom: true }).setView(
-    mapConfig.center,
-    mapConfig.zoom
-  );
+  const map = L.map("map", {
+    scrollWheelZoom: true,
+    tapTolerance: 20,
+  }).setView(mapConfig.center, mapConfig.zoom);
 
   L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution:
@@ -21,7 +21,7 @@
   function touristLabel(place) {
     if (place.tourist === "heavy") return "Tourist-heavy";
     if (place.tourist === "soft") return "A bit touristy";
-    if (place.tourist === "soft-weekends") return "Touristy weekends";
+    if (place.tourist === "soft-weekends") return "Busy weekends";
     return "";
   }
 
@@ -63,23 +63,23 @@
       return L.divIcon({
         className: "",
         html: `<div class="marker-stay" title="${place.name}">⌂</div>`,
-        iconSize: [28, 28],
-        iconAnchor: [14, 24],
+        iconSize: [30, 30],
+        iconAnchor: [15, 26],
         popupAnchor: [0, -22],
       });
     }
     return L.divIcon({
       className: "",
       html: `<div class="marker marker-${place.category}${extra}" title="${place.name}"></div>`,
-      iconSize: [16, 16],
-      iconAnchor: [8, 8],
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
       popupAnchor: [0, -10],
     });
   }
 
   function matchesFilter(place, filter) {
     if (filter === "all") return true;
-    if (filter === "shops") return Boolean(place.shops && place.shops.length);
+    if (filter === "markets") return place.category === "markets" || Boolean(place.shops);
     return place.category === filter;
   }
 
@@ -95,7 +95,7 @@
       zIndexOffset: place.category === "stay" ? 1000 : 0,
       riseOnHover: true,
     });
-    marker.bindPopup(popupHtml(place), { maxWidth: 300 });
+    marker.bindPopup(popupHtml(place), { maxWidth: 280 });
     marker.on("click", () => selectPlace(place.id, { fromMap: true }));
     markers.set(place.id, marker);
     marker.addTo(map);
@@ -114,14 +114,16 @@
         el.dataset.placeId === id || el.dataset.altId === id
       );
     });
-    if (marker && !opts.fromMap) {
-      map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 16), { duration: 0.45 });
-      marker.openPopup();
-    } else if (marker && opts.fromMap) {
+    if (marker && place) {
+      map.invalidateSize();
+      if (!opts.fromMap) {
+        document.querySelector(".map-panel").scrollIntoView({ behavior: "smooth", block: "center" });
+        map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 16), { duration: 0.45 });
+      }
       marker.openPopup();
     }
     const card = document.querySelector(`.card[data-id="${id}"]`);
-    if (card && !opts.fromMap) {
+    if (card && opts.fromMap) {
       card.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }
@@ -142,9 +144,10 @@
     });
     renderCards();
     const countEl = document.getElementById("places-count");
-    const label = filter === "all" ? "all categories" : CAT_LABEL[filter] || "Shops";
-    countEl.textContent = `${shown.length} pin${shown.length === 1 ? "" : "s"} · ${label}`;
+    const label = filter === "all" ? "all" : CAT_LABEL[filter] || filter;
+    countEl.textContent = `${shown.length} place${shown.length === 1 ? "" : "s"} · ${label}`;
     if (!opts.skipFit) fitVisible(filter);
+    map.invalidateSize();
   }
 
   function fitVisible(filter) {
@@ -159,7 +162,7 @@
       return;
     }
     const bounds = L.latLngBounds(shown.map((p) => [p.lat, p.lng]));
-    map.fitBounds(bounds, { padding: [48, 48], maxZoom: 15 });
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
   }
 
   function renderFilters() {
@@ -236,7 +239,6 @@
         <button class="route-step" type="button" data-place-id="${step.placeId}" data-alt-id="${step.altId || ""}">
           <b>${step.when}</b>
           <div>
-            <strong>Step ${step.step}</strong>
             <p>${step.text}</p>
           </div>
         </button>`
@@ -263,7 +265,6 @@
   }
 
   document.getElementById("reset-view").addEventListener("click", () => {
-    map.setView(mapConfig.center, mapConfig.zoom);
     applyFilter("all");
     const hotel = markers.get("thompson");
     if (hotel) hotel.openPopup();
@@ -278,6 +279,12 @@
   renderTours();
   applyFilter("all");
 
-  window.addEventListener("load", () => map.invalidateSize());
-  setTimeout(() => map.invalidateSize(), 200);
+  const resize = () => map.invalidateSize();
+  window.addEventListener("load", resize);
+  window.addEventListener("resize", resize);
+  setTimeout(resize, 200);
+  setTimeout(resize, 800);
+  if (window.ResizeObserver) {
+    new ResizeObserver(resize).observe(document.getElementById("map"));
+  }
 })();
