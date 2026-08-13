@@ -29,7 +29,7 @@ Intended URL: [https://webgophers.github.io/travel/](https://webgophers.github.i
 - Short skip note for Mercado de San Miguel
 - Optional paid-tour links with published prices only
 
-Jamón stalls (Jamonera Castellana, Jamonería de Juan, Casa Tere) sit on the Mercado de Chamberí card.
+Jamón stalls (Jamonera Castellana, Jamonería de Juan, Casa Tere) sit on the Mercado de Chamberí card. Barceló lists Walk and Eat first names (Daniel, Gemma, Roberto) without unpublished stall trade names. La Comunal is a confirmed olive-oil shop; a few other tour-adjacent spots are marked **likely / not confirmed**.
 
 ## Sources
 

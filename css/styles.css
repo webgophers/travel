@@ -331,6 +331,25 @@ a {
   background: #3f3f46;
   color: #fafafa;
 }
+.badge-confirmed {
+  background: #dcefe3;
+  color: #1f5c3a;
+}
+.badge-likely {
+  background: #f4ead0;
+  color: #6b4e16;
+}
+
+.confidence,
+.unnamed {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.unnamed {
+  font-style: italic;
+}
 
 .shops {
   margin: 10px 0 0;
