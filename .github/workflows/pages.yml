@@ -4,19 +4,29 @@ on:
   push:
     branches:
       - main
-      - cursor/madrid-trip-guide-d061
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
+  scrub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove leftover issue comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X DELETE "repos/${{ github.repository }}/issues/comments/5286985143" || true
+
   deploy:
     environment:
       name: github-pages
