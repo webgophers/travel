@@ -670,6 +670,8 @@ textarea {
 
 .popup .btn-dir {
   margin-top: 6px;
+  color: #fff;
+  background: #1a4d8c;
 }
 
 .leaflet-popup-close-button {
