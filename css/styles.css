@@ -728,6 +728,13 @@ textarea {
   font-size: 12px;
 }
 
+.popup .btn-quiet {
+  width: 100%;
+  margin-top: 4px;
+  font-size: 12px;
+  min-height: 36px;
+}
+
 .popup-actions {
   display: flex;
   gap: 6px;
