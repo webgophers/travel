@@ -347,6 +347,10 @@ textarea {
   border-radius: 10px;
 }
 
+.add-form[hidden] {
+  display: none !important;
+}
+
 .add-form label {
   display: grid;
   gap: 4px;
@@ -459,7 +463,7 @@ textarea {
 
 .card {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr;
   gap: 8px;
   border: 1px solid var(--line);
   background: #fff;
@@ -483,16 +487,16 @@ textarea {
   opacity: 0.78;
 }
 
+.card.has-thumb {
+  grid-template-columns: 44px 1fr;
+}
+
 .card-thumb {
   width: 44px;
   height: 44px;
   border-radius: 8px;
   object-fit: cover;
   background: #efe6d6;
-}
-
-.card-thumb.is-empty {
-  display: none;
 }
 
 .card-body {
@@ -702,10 +706,10 @@ textarea {
 .popup-photo {
   display: block;
   width: 100%;
-  height: 72px;
+  height: 56px;
   object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   background: #efe6d6;
 }
 

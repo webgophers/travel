@@ -186,14 +186,14 @@
         <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
         ${hoursLine(place)}
         ${extraLinksHtml(place)}
-        ${blurb ? `<p class="popup-blurb">${escapeHtml(blurb)}</p>` : ""}
-        ${shopList(place)}
-        ${place.unnamed ? `<p class="walk">${escapeHtml(place.unnamed)}</p>` : ""}
-        ${note ? `<p class="walk">Note: ${escapeHtml(note)}</p>` : ""}
         <div class="popup-actions">
           ${directionsButton(place)}
           ${noteButton("place", place.id)}
         </div>
+        ${blurb ? `<p class="popup-blurb">${escapeHtml(blurb)}</p>` : ""}
+        ${shopList(place)}
+        ${place.unnamed ? `<p class="walk">${escapeHtml(place.unnamed)}</p>` : ""}
+        ${note ? `<p class="walk">Note: ${escapeHtml(note)}</p>` : ""}
         ${hideBtn}
       </div>
     `;
@@ -375,11 +375,9 @@
     wrap.innerHTML = visiblePlaces()
       .map((place) => {
         const warn = touristLabel(place);
-        const thumb = place.photo
-          ? photoHtml(place, "card-thumb")
-          : `<span class="card-thumb is-empty" aria-hidden="true"></span>`;
+        const thumb = place.photo ? photoHtml(place, "card-thumb") : "";
         return `
-          <article class="card${place.closed ? " is-closed" : ""}${place.id === activeId ? " is-active" : ""}" data-id="${escapeHtml(place.id)}" tabindex="0">
+          <article class="card${place.photo ? " has-thumb" : ""}${place.closed ? " is-closed" : ""}${place.id === activeId ? " is-active" : ""}" data-id="${escapeHtml(place.id)}" tabindex="0">
             ${thumb}
             <div class="card-body">
               <div class="card-top">
