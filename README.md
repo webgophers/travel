@@ -31,7 +31,8 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 - **Directions** on every card and map popup (Google Maps; no API key)
 - Notes, hide/show, and “Add a place” live in **this browser only** (`localStorage`) — nothing is written back to the repo
 - **Reset my edits** clears those local changes
-- Phone layout: day plan, then a full-width map (~46vh), then the list; huge filters
+- Phone layout: day plan, then a full-width map (~40vh, sticky) plus **Back to map**; one scrollable filter row
+- Tap a place card to pan the map and open that pin (and the other way around)
 - Desktop: two columns with a sticky map
 - Filters: Stay, Eat, Markets, See
 - Gold hotel pin for Thompson Madrid

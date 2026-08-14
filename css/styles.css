@@ -13,7 +13,7 @@
   --shadow: 0 14px 40px rgba(28, 23, 18, 0.1);
   --radius: 20px;
   --pad: clamp(16px, 4vw, 28px);
-  --tap: 48px;
+  --tap: 44px;
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --font-ui: "Outfit", "Avenir Next", system-ui, sans-serif;
 }
@@ -118,10 +118,17 @@ a {
   color: var(--stay);
 }
 
-.hotel-chip a {
+.hotel-chip__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
   margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 12px;
   color: #f7f1e4;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .page {
@@ -350,9 +357,17 @@ textarea {
 }
 
 .filters {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: nowrap;
   gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
 }
 
 .filter,
@@ -362,15 +377,13 @@ textarea {
   color: var(--ink);
   border-radius: 999px;
   min-height: var(--tap);
-  padding: 10px 14px;
+  padding: 10px 16px;
   font: inherit;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-}
-
-.filter[data-cat="all"] {
-  grid-column: 1 / -1;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .filter.is-on {
@@ -390,8 +403,32 @@ textarea {
 
 #map {
   width: 100%;
-  height: 46vh;
-  min-height: 260px;
+  height: 40vh;
+  min-height: 200px;
+  max-height: 320px;
+}
+
+.back-to-map {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 40;
+  min-height: var(--tap);
+  min-width: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #f7f1e4;
+  font: inherit;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.back-to-map[hidden] {
+  display: none !important;
 }
 
 .cards {
@@ -408,6 +445,8 @@ textarea {
   font: inherit;
   color: inherit;
   width: 100%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(28, 23, 18, 0.08);
 }
 
 .card:hover,
@@ -522,15 +561,26 @@ textarea {
 }
 
 .shops li {
-  padding: 6px 0;
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
   border-top: 1px dashed var(--line);
 }
 
-.card-link {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 15px;
+.card-link,
+.tap-link,
+.popup a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 8px 4px;
+  font-size: 16px;
   color: var(--entertainment);
+}
+
+.card-link {
+  margin-top: 4px;
 }
 
 .hidden-wrap {
@@ -589,33 +639,63 @@ textarea {
 }
 
 .leaflet-popup-content {
-  margin: 14px 16px 16px;
-  min-width: 240px;
+  margin: 12px 44px 12px 14px;
+  min-width: 0;
+  max-height: 168px;
+  overflow: auto;
 }
 
 .popup h3 {
-  margin: 4px 0 6px;
-  font-size: 1.15rem;
+  margin: 4px 0 4px;
+  font-size: 1.05rem;
 }
 
-.popup p {
-  margin: 0 0 8px;
-  font-size: 16px;
+.popup p,
+.popup-blurb {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.popup-blurb {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .popup .walk {
   color: var(--ink-soft);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .popup .btn-dir {
-  margin-top: 8px;
+  margin-top: 6px;
+  color: #fff;
+  background: #1a4d8c;
+}
+
+.leaflet-popup-close-button {
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 28px !important;
+  line-height: 44px !important;
+  padding: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaflet-bottom.leaflet-right {
+  margin-bottom: 8px;
+  margin-right: 8px;
 }
 
 .leaflet-control-zoom a {
-  width: 40px !important;
-  height: 40px !important;
-  line-height: 40px !important;
+  width: 44px !important;
+  height: 44px !important;
+  line-height: 44px !important;
   font-size: 20px !important;
 }
 
@@ -653,16 +733,20 @@ textarea {
   opacity: 0.8;
 }
 
+@media (max-width: 899px) {
+  .map-panel {
+    position: sticky;
+    top: 0;
+    z-index: 8;
+  }
+
+  #places,
+  .card {
+    scroll-margin-top: calc(40vh + 96px);
+  }
+}
+
 @media (min-width: 640px) {
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .filter[data-cat="all"] {
-    grid-column: auto;
-  }
-
   .add-form {
     grid-template-columns: 1fr 1fr;
   }
@@ -705,6 +789,10 @@ textarea {
     flex: 1;
     height: auto;
     min-height: 0;
+    max-height: none;
+  }
+  .back-to-map {
+    display: none !important;
   }
   #places { grid-area: places; }
   .skip-box { grid-area: skip; }
