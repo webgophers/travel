@@ -6,7 +6,9 @@
   const map = L.map("map", {
     scrollWheelZoom: true,
     tapTolerance: 24,
+    zoomControl: false,
   }).setView(mapConfig.center, mapConfig.zoom);
+  L.control.zoom({ position: "bottomright" }).addTo(map);
 
   L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution:
@@ -78,7 +80,7 @@
     return `<ul class="shops">${place.shops
       .map((s) => {
         const name = s.link
-          ? `<a href="${escapeHtml(s.link)}" target="_blank" rel="noopener">${escapeHtml(s.name)}</a>`
+          ? `<a class="tap-link" href="${escapeHtml(s.link)}" target="_blank" rel="noopener">${escapeHtml(s.name)}</a>`
           : `<strong>${escapeHtml(s.name)}</strong>`;
         return `<li>${name} — ${escapeHtml(s.note)}</li>`;
       })
@@ -90,7 +92,7 @@
     return place.extraLinks
       .map(
         (l) =>
-          `<a class="card-link" href="${escapeHtml(l.href)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a>`
+          `<a class="card-link tap-link" href="${escapeHtml(l.href)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a>`
       )
       .join(" ");
   }
@@ -126,10 +128,8 @@
     const closed = place.closed ? `<span class="badge badge-closed">Closed</span>` : "";
     const warnBadge = warn ? `<span class="badge badge-warn">${warn}</span>` : "";
     const yours = place.custom ? `<span class="badge badge-yours">Yours</span>` : "";
-    const link = place.link
-      ? `<a href="${escapeHtml(place.link)}" target="_blank" rel="noopener">${escapeHtml(place.linkLabel || "Link")}</a>`
-      : "";
     const note = edits.notes[place.id];
+    const blurb = place.confidenceNote || place.takeaway || "";
     return `
       <div class="popup">
         <div class="badges">
@@ -139,15 +139,9 @@
           ${warnBadge}${closed}
         </div>
         <h3>${escapeHtml(place.name)}</h3>
-        <p class="meta">${escapeHtml(place.neighborhood || "")}${place.address ? " · " + escapeHtml(place.address) : ""}</p>
-        ${place.confidenceNote ? `<p class="confidence">${escapeHtml(place.confidenceNote)}</p>` : ""}
-        <p>${escapeHtml(place.takeaway || "")}</p>
-        ${place.walk ? `<p class="walk">${escapeHtml(place.walk)}</p>` : ""}
-        ${shopList(place)}
-        ${place.unnamed ? `<p class="unnamed">${escapeHtml(place.unnamed)}</p>` : ""}
+        <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
+        ${blurb ? `<p class="popup-blurb">${escapeHtml(blurb)}</p>` : ""}
         ${note ? `<p class="walk">Note: ${escapeHtml(note)}</p>` : ""}
-        ${link}
-        ${extraLinksHtml(place)}
         ${directionsButton(place)}
       </div>
     `;
@@ -201,7 +195,16 @@
         zIndexOffset: place.category === "stay" ? 1000 : 0,
         riseOnHover: true,
       });
-      marker.bindPopup(popupHtml(place), { maxWidth: 340, minWidth: 260, className: "place-popup" });
+      marker.bindPopup(popupHtml(place), {
+        maxWidth: 260,
+        minWidth: 180,
+        maxHeight: 168,
+        autoPan: true,
+        autoPanPaddingTopLeft: [12, 12],
+        autoPanPaddingBottomRight: [56, 64],
+        keepInView: true,
+        className: "place-popup",
+      });
       marker.on("click", () => selectPlace(place.id, { fromMap: true }));
       markers.set(place.id, marker);
       if (matchesFilter(place, activeFilter)) marker.addTo(map);
@@ -218,6 +221,22 @@
     });
   }
 
+  function cardEl(id) {
+    return document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
+  }
+
+  function openPlacePopup(place, marker) {
+    map.invalidateSize();
+    map.setView([place.lat, place.lng], Math.max(map.getZoom(), 16), { animate: false });
+    marker.setPopupContent(popupHtml(place));
+    marker.openPopup();
+    const popupEl = marker.getPopup() && marker.getPopup().getElement();
+    const extra = popupEl ? Math.max(0, popupEl.offsetHeight / 2 + 12 - map.getSize().y * 0.28) : 0;
+    if (extra > 0) {
+      map.panBy([0, extra], { animate: false });
+    }
+  }
+
   function selectPlace(id, opts = {}) {
     const place = findPlace(id);
     if (!place) return;
@@ -231,18 +250,18 @@
     }
     highlightActive();
     const marker = markers.get(id);
-    if (marker && place.lat != null && place.lng != null) {
-      map.invalidateSize();
-      if (!opts.fromMap) {
-        document.querySelector(".map-panel").scrollIntoView({ behavior: "smooth", block: "center" });
-        map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 16), { duration: 0.45 });
+    const revealMap = () => {
+      if (marker && place.lat != null && place.lng != null) {
+        openPlacePopup(place, marker);
       }
-      marker.setPopupContent(popupHtml(place));
-      marker.openPopup();
-    }
-    const card = document.querySelector(`.card[data-id="${id}"]`);
-    if (card && opts.fromMap) {
-      card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+    if (!opts.fromMap) {
+      document.getElementById("map-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+      window.setTimeout(revealMap, 280);
+    } else {
+      revealMap();
+      const card = cardEl(id);
+      if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }
 
@@ -312,7 +331,7 @@
           ? `<button class="btn-quiet" type="button" data-delete="${escapeHtml(place.id)}">Delete</button>`
           : `<button class="btn-quiet" type="button" data-hide="${escapeHtml(place.id)}">Hide</button>`;
         return `
-          <article class="card${place.closed ? " is-closed" : ""}${place.id === activeId ? " is-active" : ""}" data-id="${escapeHtml(place.id)}">
+          <article class="card${place.closed ? " is-closed" : ""}${place.id === activeId ? " is-active" : ""}" data-id="${escapeHtml(place.id)}" tabindex="0">
             <div class="card-top">
               <h3>${escapeHtml(place.name)}</h3>
               <div class="badges">
@@ -331,6 +350,7 @@
             ${link}
             ${extraLinksHtml(place)}
             <div class="card-actions">
+              <button class="btn-quiet" type="button" data-show-map="${escapeHtml(place.id)}">Show on map</button>
               ${directionsButton(place)}
               ${removeBtn}
             </div>
@@ -449,10 +469,30 @@
     saveEdits();
   });
 
+  function activateCard(card) {
+    if (!card || !card.dataset.id) return;
+    applyFilter("all", { skipFit: true });
+    selectPlace(card.dataset.id);
+  }
+
   document.getElementById("cards").addEventListener("click", (e) => {
+    const showBtn = e.target.closest("[data-show-map]");
+    if (showBtn) {
+      applyFilter("all", { skipFit: true });
+      selectPlace(showBtn.dataset.showMap);
+      return;
+    }
+    if (e.target.closest("a, textarea, button, label.note-label")) return;
+    const card = e.target.closest(".card");
+    if (card) activateCard(card);
+  });
+  document.getElementById("cards").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
     if (e.target.closest("a, textarea, button")) return;
     const card = e.target.closest(".card");
-    if (card) selectPlace(card.dataset.id);
+    if (!card) return;
+    e.preventDefault();
+    activateCard(card);
   });
 
   document.getElementById("cards").addEventListener("input", (e) => {
@@ -556,6 +596,23 @@
     applyFilter("all");
     renderHidden();
   });
+
+  const backToMap = document.getElementById("back-to-map");
+  const mapPanel = document.getElementById("map-panel");
+  function goToMap() {
+    mapPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.setTimeout(() => map.invalidateSize(), 280);
+  }
+  backToMap.addEventListener("click", goToMap);
+  if (window.IntersectionObserver) {
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        backToMap.hidden = entry.isIntersecting;
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(mapPanel);
+  }
 
   renderFilters();
   renderDays();
