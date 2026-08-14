@@ -1,6 +1,8 @@
 /* Madrid guide data.
  * Coordinates: listed where given; otherwise Wikipedia or OSM Nominatim.
  * Do not add places, quotes, or prices that are not in this file.
+ * Hours: official / Turismo Madrid / venue sites. Unknown or seasonal → Hours: check site.
+ * Photos: Wikimedia Commons only (hotlink + credit). Skip if no Commons file.
  */
 window.GUIDE = {
   hotel: {
@@ -32,6 +34,7 @@ window.GUIDE = {
       linkLabel: "Hyatt listing",
       walk: "You are here",
       coordSource: "provided; matches OSM way/265317799",
+      hours: "Hours: check site",
     },
     {
       id: "chamberi-market",
@@ -63,6 +66,14 @@ window.GUIDE = {
         },
       ],
       coordSource: "Wikipedia 40.43622222, -3.69761944",
+      hours: "Stalls Mon–Fri 9:30–14:00 & 17:00–20:00; Sat 9:30–14:30. Kitchen Tue–Sat lunch + dinner; Sun lunch; Mon closed.",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Mercado%20de%20Chamber%C3%AD%20%28Madrid%29%2001.jpg?width=400",
+        alt: "Façade of Mercado de Chamberí",
+        credit: "Luis García / Wikimedia Commons",
+        license: "CC BY-SA 3.0 ES",
+        page: "https://commons.wikimedia.org/wiki/File:Mercado_de_Chamberí_(Madrid)_01.jpg",
+      },
     },
     {
       id: "barcelo",
@@ -98,6 +109,14 @@ window.GUIDE = {
       confidence: "confirmed",
       confidenceNote: "Confirmed Walk and Eat market. Vendor first names published; stall trade names unpublished.",
       coordSource: "provided",
+      hours: "Floors 0–1 Mon–Fri 9:00–14:30 & 17:30–20:30; Sat 9:00–15:00. Floor 2 food daily 11:00–01:00. Seasonal — check site.",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Mercado-Barcelo-151217.jpg?width=400",
+        alt: "Mercado de Barceló",
+        credit: "FDV / Wikimedia Commons",
+        license: "CC BY-SA 4.0",
+        page: "https://commons.wikimedia.org/wiki/File:Mercado-Barcelo-151217.jpg",
+      },
     },
     {
       id: "aceitunas-del-campo",
@@ -114,6 +133,7 @@ window.GUIDE = {
       confidence: "likely",
       confidenceNote: "Likely / not confirmed as the tour stop.",
       coordSource: "same building as Mercado Barceló (provided); stall is inside",
+      hours: "Hours: check site",
     },
     {
       id: "la-comunal",
@@ -131,6 +151,7 @@ window.GUIDE = {
       confidence: "confirmed",
       confidenceNote: "Confirmed Walk and Eat partner.",
       coordSource: "OSM node Patrimonio Comunal Olivarero /2777281755",
+      hours: "Mon–Fri 10:00–14:00 & 17:00–20:00; Sat 10:00–14:00. Often closed August — check site.",
     },
     {
       id: "vallehermoso",
@@ -145,6 +166,14 @@ window.GUIDE = {
       linkLabel: "Turismo Madrid",
       walk: "~2.4 km / ~30 min walk",
       coordSource: "Wikipedia 40.434125, -3.708336",
+      hours: "Hours: check site",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Mercado%20de%20Vallehermoso%20-%20Madrid.jpg?width=400",
+        alt: "Mercado de Vallehermoso",
+        credit: "Tamorlan / Wikimedia Commons",
+        license: "CC BY-SA 3.0",
+        page: "https://commons.wikimedia.org/wiki/File:Mercado_de_Vallehermoso_-_Madrid.jpg",
+      },
     },
     {
       id: "mostenses",
@@ -159,6 +188,14 @@ window.GUIDE = {
       linkLabel: "Turismo Madrid",
       walk: "~1.1 km / ~14 min walk",
       coordSource: "OSM relation/4425587",
+      hours: "Food Mon–Fri 9:00–14:00 & 17:00–20:00; Sat 9:00–15:00. Hours vary by stall.",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Mercado%20de%20los%20Mostenses%20-%20Madrid%2001.jpg?width=400",
+        alt: "Mercado de los Mostenses",
+        credit: "Javier Perez Montes / Wikimedia Commons",
+        license: "CC BY-SA 4.0",
+        page: "https://commons.wikimedia.org/wiki/File:Mercado_de_los_Mostenses_-_Madrid_01.jpg",
+      },
     },
     {
       id: "el-doble",
@@ -173,6 +210,7 @@ window.GUIDE = {
       linkLabel: "Turismo Madrid",
       walk: "~2.5 km north / Metro L1 is easier than walking",
       coordSource: "OSM Nominatim for Calle de Ponzano 58",
+      hours: "Hours: check site",
     },
     {
       id: "ardosa",
@@ -188,6 +226,7 @@ window.GUIDE = {
       walk: "~0.8 km / ~10 min walk",
       tourist: "heavy",
       coordSource: "OSM node Bodega de la Ardosa /2585147466",
+      hours: "Sun–Thu 9:00–2:00; Fri–Sat 9:00–2:30",
     },
     {
       id: "casa-baranda",
@@ -200,6 +239,9 @@ window.GUIDE = {
       takeaway: "Ardosa group, next door. Same block, same timing advice.",
       walk: "~0.8 km / ~10 min walk",
       coordSource: "OSM node Casa Baranda /2661123393",
+      hours: "Hours: check site",
+      link: "https://www.google.com/maps/search/?api=1&query=Casa%20Baranda%20Calle%20de%20Col%C3%B3n%2011%20Madrid",
+      linkLabel: "Google Maps",
     },
     {
       id: "casa-julio",
@@ -214,6 +256,7 @@ window.GUIDE = {
       linkLabel: "Turismo Madrid",
       walk: "~1 km / ~12 min walk",
       coordSource: "OSM node Casa Julio /2583954354",
+      hours: "Hours: check site",
     },
     {
       id: "pez-tortilla",
@@ -228,6 +271,7 @@ window.GUIDE = {
       linkLabel: "peztortilla.com",
       walk: "~1.1 km / ~14 min walk",
       coordSource: "OSM node Pez Tortilla /2630111357",
+      hours: "Hours: check site",
     },
     {
       id: "churreria-madrid-1883",
@@ -243,6 +287,9 @@ window.GUIDE = {
       confidence: "likely",
       confidenceNote: "Likely / not confirmed as the tour stop.",
       coordSource: "OSM node Madrid 1883 Churreria /6325195806",
+      hours: "Hours: check site",
+      link: "https://www.google.com/maps/search/?api=1&query=Churrer%C3%ADa%20Madrid%201883%20Esp%C3%ADritu%20Santo",
+      linkLabel: "Google Maps",
     },
     {
       id: "angel-sierra",
@@ -257,6 +304,7 @@ window.GUIDE = {
       linkLabel: "tabernadeangelsierra.es",
       walk: "~1.9 km / ~25 min walk",
       coordSource: "OSM node Taberna de Ángel Sierra /3897299367",
+      hours: "Hours: check site",
     },
     {
       id: "casa-hortensia",
@@ -271,6 +319,7 @@ window.GUIDE = {
       linkLabel: "Turismo Madrid",
       walk: "~1 km / ~12 min walk",
       coordSource: "OSM node Casa Hortensia /2661121483",
+      hours: "Hours: check site",
     },
     {
       id: "caja-de-cerillas",
@@ -283,6 +332,9 @@ window.GUIDE = {
       takeaway: "Newer (2025) neo-castizo. Thinner reputation than the old names — book if you go.",
       walk: "~2.4 km / ~30 min walk",
       coordSource: "OSM node Caja De Cerillas /12880638622",
+      hours: "Hours: check site",
+      link: "https://www.google.com/maps/search/?api=1&query=Caja%20de%20Cerillas%20Donoso%20Cort%C3%A9s%208%20Madrid",
+      linkLabel: "Google Maps",
     },
     {
       id: "sala-de-despiece",
@@ -298,6 +350,9 @@ window.GUIDE = {
       confidence: "likely",
       confidenceNote: "Likely / not confirmed as the tour stop.",
       coordSource: "OSM building Calle de Alonso Cano 27 way/385080174 (OSM still lists the old Ponzano 11 restaurant node; pin uses the stated new address)",
+      hours: "Hours: check site",
+      link: "https://www.google.com/maps/search/?api=1&query=Sala%20de%20Despiece%20Alonso%20Cano%20Madrid",
+      linkLabel: "Google Maps",
     },
     {
       id: "taberna-la-mina",
@@ -312,6 +367,9 @@ window.GUIDE = {
       confidence: "likely",
       confidenceNote: "Likely / not confirmed as the tour stop.",
       coordSource: "OSM node Taberna La Mina /2651989201",
+      hours: "Hours: check site",
+      link: "https://www.google.com/maps/search/?api=1&query=Taberna%20La%20Mina%20General%20%C3%81lvarez%20de%20Castro%208%20Madrid",
+      linkLabel: "Google Maps",
     },
     {
       id: "comercial",
@@ -326,7 +384,18 @@ window.GUIDE = {
       linkLabel: "Visitor writeup (wheregoesrose.com)",
       walk: "~2.0 km / ~25 min walk",
       tourist: "soft",
+      extraLinks: [
+        { href: "https://cafecomercialmadrid.com/", label: "cafecomercialmadrid.com" },
+      ],
       coordSource: "OSM node Café Comercial /26065697",
+      hours: "Hours: check site",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Caf%C3%A9%20Comercial%20%28Madrid%29%2002.jpg?width=400",
+        alt: "Café Comercial",
+        credit: "Luis García / Wikimedia Commons",
+        license: "CC BY-SA 4.0",
+        page: "https://commons.wikimedia.org/wiki/File:Café_Comercial_(Madrid)_02.jpg",
+      },
     },
     {
       id: "ponzano",
@@ -340,6 +409,9 @@ window.GUIDE = {
       walk: "North of Bilbao; Metro L1 toward Ríos Rosas",
       tourist: "soft-weekends",
       coordSource: "OSM way Calle de Ponzano (Almagro stretch) /8029884",
+      hours: "Hours: varies by bar",
+      link: "https://www.google.com/maps/search/?api=1&query=Calle%20de%20Ponzano%20Chamber%C3%AD%20Madrid",
+      linkLabel: "Google Maps",
     },
     {
       id: "anden-0",
@@ -354,6 +426,14 @@ window.GUIDE = {
       linkLabel: "Museos Metro Madrid",
       walk: "~2.5 km / ~30 min walk",
       coordSource: "Wikipedia 40.4323, -3.69772",
+      hours: "Fri 16:00–20:00; Sat 10:00–14:00 & 16:00–20:00; Sun 10:00–14:00. Book ahead. Closed Christmas, New Year, Reyes.",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/And%C3%A9n%200%20Estaci%C3%B3n%20de%20Chamber%C3%AD%20en%20septiembre%20de%202022%2001.jpg?width=400",
+        alt: "Andén 0, Estación de Chamberí",
+        credit: "Emilio J. Rodríguez Posada / Wikimedia Commons",
+        license: "CC BY-SA 4.0",
+        page: "https://commons.wikimedia.org/wiki/File:Andén_0_Estación_de_Chamberí_en_septiembre_de_2022_01.jpg",
+      },
     },
     {
       id: "beti-jai",
@@ -366,6 +446,16 @@ window.GUIDE = {
       takeaway: "1894 pelota court. National Monument.",
       walk: "~2.3 km / ~28 min walk",
       coordSource: "provided; OSM way/965335844 nearby",
+      hours: "Tue–Sun; summer (15 Jun–30 Sep) 10:00–18:00; rest of year 10:00–14:00. Free. Check site.",
+      link: "https://www.esmadrid.com/informacion-turistica/fronton-beti-jai",
+      linkLabel: "Turismo Madrid",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Front%C3%B3n%20Beti%20Jai%20de%20Madrid%20en%20octubre%20de%202023%2001.jpg?width=400",
+        alt: "Frontón Beti Jai",
+        credit: "Emilio J. Rodríguez Posada / Wikimedia Commons",
+        license: "CC BY-SA 4.0",
+        page: "https://commons.wikimedia.org/wiki/File:Frontón_Beti_Jai_de_Madrid_en_octubre_de_2023_01.jpg",
+      },
     },
     {
       id: "sorolla",
@@ -380,6 +470,7 @@ window.GUIDE = {
       linkLabel: "Ayuntamiento de Madrid",
       closed: true,
       coordSource: "Wikipedia 40.435404, -3.692539",
+      hours: "Closed (expansion). Check site for reopening.",
     },
     {
       id: "geominero",
@@ -394,6 +485,7 @@ window.GUIDE = {
       linkLabel: "IGME – Visítanos",
       walk: "Near El Doble / Ríos Rosas Metro",
       coordSource: "Wikipedia 40.4427, -3.6996",
+      hours: "Daily 9:00–14:00, including holidays. Closed 24–25 & 31 Dec, 1 & 6 Jan. Free.",
     },
     {
       id: "olavide",
@@ -406,6 +498,16 @@ window.GUIDE = {
       takeaway: "Local octagonal plaza with terraces. A pause, not a monument.",
       walk: "~2.2 km / ~27 min walk",
       coordSource: "OSM way Plaza de Olavide /248905968",
+      hours: "Open plaza",
+      link: "https://www.google.com/maps/search/?api=1&query=Plaza%20de%20Olavide%20Madrid",
+      linkLabel: "Google Maps",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Vista%20de%20la%20Plaza%20de%20Olavide%20de%20Madrid.jpg?width=400",
+        alt: "Plaza de Olavide",
+        credit: "Jotaemec / Wikimedia Commons",
+        license: "CC0",
+        page: "https://commons.wikimedia.org/wiki/File:Vista_de_la_Plaza_de_Olavide_de_Madrid.jpg",
+      },
     },
     {
       id: "canal",
@@ -420,6 +522,7 @@ window.GUIDE = {
       linkLabel: "teatroscanal.com",
       walk: "~2.7 km / ~35 min walk",
       coordSource: "Wikipedia 40.438441, -3.705059",
+      hours: "Hours: check site",
     },
     {
       id: "conde-duque",
@@ -432,6 +535,16 @@ window.GUIDE = {
       takeaway: "Municipal cultural centre in the old barracks. Exhibitions, concerts, courtyard.",
       walk: "~1.8 km / ~22 min walk",
       coordSource: "Wikipedia 40.427852, -3.710681",
+      hours: "Hours: check site",
+      link: "https://www.condeduquemadrid.es/",
+      linkLabel: "condeduquemadrid.es",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Cuartel%20del%20Conde-Duque%20%28Madrid%29%2005.jpg?width=400",
+        alt: "Conde Duque",
+        credit: "Luis García / Wikimedia Commons",
+        license: "CC BY-SA 3.0",
+        page: "https://commons.wikimedia.org/wiki/File:Cuartel_del_Conde-Duque_(Madrid)_05.jpg",
+      },
     },
     {
       id: "historia",
@@ -444,6 +557,9 @@ window.GUIDE = {
       takeaway: "City history museum on Fuencarral. Useful rainy-hour stop.",
       walk: "~1.1 km / ~14 min walk",
       coordSource: "OSM node Museo de Historia de Madrid /12921081474",
+      hours: "Tue–Sun 10:00–20:00; summer (15 Jun–15 Sep) 10:00–19:00. Closed Mon and 1 & 6 Jan, 1 May, 24–25 & 31 Dec. Free.",
+      link: "https://www.esmadrid.com/informacion-turistica/museo-de-historia",
+      linkLabel: "Turismo Madrid",
     },
     {
       id: "escultura",
@@ -458,6 +574,7 @@ window.GUIDE = {
       linkLabel: "Turismo Madrid",
       walk: "~2.5 km / ~30 min walk",
       coordSource: "Wikipedia 40.43303, -3.68748",
+      hours: "Open-air — always open",
     },
     {
       id: "gran-via",
@@ -470,6 +587,16 @@ window.GUIDE = {
       takeaway: "Theatre stretch of Gran Vía. Short walk from Thompson — evening lights, not a hidden corner.",
       walk: "~0.5 km / a few minutes",
       coordSource: "OSM Plaza de Callao relation/13452454",
+      hours: "Street — always open",
+      link: "https://www.esmadrid.com/informacion-turistica/gran-via",
+      linkLabel: "Turismo Madrid",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Gran%20V%C3%ADa%20%28Madrid%29%2039.jpg?width=400",
+        alt: "Gran Vía, Madrid",
+        credit: "ianaiare / Wikimedia Commons",
+        license: "CC BY-SA 2.0",
+        page: "https://commons.wikimedia.org/wiki/File:Gran_Vía_(Madrid)_39.jpg",
+      },
     },
   ],
   days: [
