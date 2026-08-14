@@ -6,7 +6,7 @@
     <title>Madrid trip guide — Thompson Madrid</title>
     <meta
       name="description"
-      content="A practical Madrid neighborhood guide based at Thompson Madrid. Markets, food, and Chamberí/Malasaña — not San Miguel."
+      content="A practical Madrid neighborhood guide based at Thompson Madrid. Three easy days, markets, food, and Chamberí/Malasaña — not San Miguel."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,8 +28,10 @@
 
     <header class="site-header">
       <p class="eyebrow">Madrid · Sol / Chamberí / Malasaña</p>
-      <h1>A short map for a few good days</h1>
-      <p class="lede">Working markets, vermouth, Ponzano. Not San Miguel. Tap a step or a pin.</p>
+      <h1>Three easy days from Thompson</h1>
+      <p class="lede">
+        Tap a meal slot to jump the map. Directions opens Google Maps. Notes stay on this phone only.
+      </p>
       <div class="hotel-chip">
         <span class="hotel-chip__label">Stay</span>
         <strong>Thompson Madrid</strong>
@@ -39,25 +41,71 @@
     </header>
 
     <main class="page">
-      <section class="panel" id="route">
-        <h2>Half-day food walk</h2>
-        <p class="kicker">Do this yourself. A paid tour is only worth it if you want the stories.</p>
-        <div class="route" id="route-steps"></div>
-        <p class="note">Markets: weekday mornings. Ardosa: before ~7pm. Ponzano: loud Thu–Sat.</p>
+      <section class="panel" id="days">
+        <h2>Day plan</h2>
+        <p class="kicker">Existing pins only. Tap a slot — or the place name — to focus that pin.</p>
+        <div class="day-tabs" id="day-tabs" role="tablist" aria-label="Trip days"></div>
+        <p class="transit" id="day-transit"></p>
+        <div class="day-slots" id="day-slots"></div>
       </section>
 
       <section class="map-panel" aria-label="Madrid map">
         <div class="map-toolbar">
           <div class="filters" id="filters" role="toolbar" aria-label="Category filters"></div>
-          <button class="ghost" id="reset-view" type="button">Reset map</button>
+          <div class="map-actions">
+            <button class="ghost" id="reset-view" type="button">Reset map</button>
+            <button class="ghost ghost-warn" id="reset-edits" type="button">Reset my edits</button>
+          </div>
         </div>
         <div id="map" role="application" aria-label="Interactive map of recommended Madrid spots"></div>
+      </section>
+
+      <section class="panel" id="add-place">
+        <h2>Add a place</h2>
+        <p class="kicker">Saved on this phone only. Built-in pins stay in the file; you can hide them.</p>
+        <form id="add-form" class="add-form">
+          <label>
+            Name
+            <input id="add-name" name="name" type="text" required autocomplete="off" placeholder="Place name" />
+          </label>
+          <label>
+            Category
+            <select id="add-category" name="category" required>
+              <option value="stay">Stay</option>
+              <option value="food" selected>Eat</option>
+              <option value="markets">Markets</option>
+              <option value="entertainment">See</option>
+            </select>
+          </label>
+          <label class="add-span">
+            Address
+            <input id="add-address" name="address" type="text" autocomplete="off" placeholder="Street, Madrid" />
+          </label>
+          <label>
+            Latitude
+            <input id="add-lat" name="lat" type="text" inputmode="decimal" placeholder="40.42" />
+          </label>
+          <label>
+            Longitude
+            <input id="add-lng" name="lng" type="text" inputmode="decimal" placeholder="-3.70" />
+          </label>
+          <label class="add-span">
+            Note (optional)
+            <textarea id="add-note" name="note" rows="2" placeholder="Only on this phone"></textarea>
+          </label>
+          <p class="form-hint add-span">Need a map pin? Add lat and lng. Address alone still gets Directions.</p>
+          <button class="btn-primary add-span" type="submit">Add this place</button>
+        </form>
       </section>
 
       <section class="panel" id="places">
         <h2 id="places-heading">Places</h2>
         <p class="kicker" id="places-count"></p>
         <div class="cards" id="cards"></div>
+        <div id="hidden-wrap" class="hidden-wrap" hidden>
+          <h3>Hidden</h3>
+          <div id="hidden-list"></div>
+        </div>
       </section>
 
       <section class="panel skip-box">
@@ -67,14 +115,14 @@
 
       <section class="panel" id="tours-panel">
         <h2>Paid tours</h2>
-        <p class="kicker">Optional. The walk above covers the same neighborhoods. Unpublished stops are not listed.</p>
+        <p class="kicker">Optional. The days above cover the same neighborhoods. Unpublished stops are not listed.</p>
         <div class="tours" id="tours"></div>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>
-        Coordinates from listed research, Wikipedia, or OpenStreetMap. Walking times are rough from Thompson Madrid. Map: OpenStreetMap / CARTO.
+        Coordinates from listed research, Wikipedia, or OpenStreetMap. Walking times are rough from Thompson Madrid. Map: OpenStreetMap / CARTO. Your notes and added places never leave this browser.
       </p>
     </footer>
 

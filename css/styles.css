@@ -13,6 +13,7 @@
   --shadow: 0 14px 40px rgba(28, 23, 18, 0.1);
   --radius: 20px;
   --pad: clamp(16px, 4vw, 28px);
+  --tap: 48px;
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --font-ui: "Outfit", "Avenir Next", system-ui, sans-serif;
 }
@@ -145,53 +146,184 @@ a {
 }
 
 .kicker,
-.note {
+.note,
+.form-hint,
+.transit {
   margin: 0 0 12px;
   color: var(--ink-soft);
   font-size: 15px;
 }
 
-.note {
-  margin: 12px 0 0;
+.transit {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  background: #fff8ee;
+  border-radius: 12px;
+  font-weight: 500;
 }
 
-.route {
+.day-tabs {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+  margin-bottom: 12px;
 }
 
-.route-step {
-  display: grid;
-  grid-template-columns: 4.6rem 1fr;
-  gap: 10px;
-  width: 100%;
-  min-height: 64px;
-  text-align: left;
+.day-tab {
+  min-height: 56px;
   border: 1px solid var(--line);
   background: #fff;
   border-radius: 14px;
-  padding: 12px 14px;
-  cursor: pointer;
   font: inherit;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
   color: inherit;
+  padding: 8px 6px;
+  line-height: 1.15;
 }
 
-.route-step:hover,
-.route-step.is-active {
+.day-tab small {
+  display: block;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.day-tab.is-on {
+  background: var(--ink);
+  color: #f7f1e4;
+  border-color: transparent;
+}
+
+.day-tab.is-on small {
+  color: #d9c9a8;
+}
+
+.day-slots {
+  display: grid;
+  gap: 10px;
+}
+
+.day-slot {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.day-slot.is-active {
   border-color: rgba(194, 74, 42, 0.5);
   background: #fff8f4;
 }
 
-.route-step b {
+.day-slot__when {
   font-size: 12px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-weight: 700;
   color: var(--food);
-  padding-top: 2px;
 }
 
-.route-step p {
-  margin: 2px 0 0;
+.day-slot__text {
+  margin: 0;
+  font-size: 16px;
+}
+
+.day-slot__picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pick,
+.btn-primary,
+.btn-dir,
+.btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: 10px 16px;
+  border-radius: 14px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  color: inherit;
+  background: #fff;
+}
+
+.pick {
+  flex: 1 1 auto;
+}
+
+.pick:hover,
+.pick:focus-visible {
+  border-color: var(--food);
+}
+
+.btn-primary,
+.btn-dir {
+  background: var(--ink);
+  color: #f7f1e4;
+  border-color: transparent;
+}
+
+.btn-dir {
+  width: 100%;
+  margin-top: 10px;
+  background: #1a4d8c;
+}
+
+.btn-quiet {
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.note-label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+textarea,
+input,
+select {
+  width: 100%;
+  min-height: var(--tap);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 16px;
+  background: #fff;
+  color: inherit;
+}
+
+textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.add-form {
+  display: grid;
+  gap: 12px;
+}
+
+.add-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .map-panel {
@@ -206,17 +338,21 @@ a {
 
 .map-toolbar {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
-  align-items: center;
   padding: 10px 10px 8px;
 }
 
-.filters {
+.map-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  flex: 1;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
 .filter,
@@ -225,12 +361,16 @@ a {
   background: #fff;
   color: var(--ink);
   border-radius: 999px;
-  min-height: 44px;
-  padding: 8px 16px;
+  min-height: var(--tap);
+  padding: 10px 14px;
   font: inherit;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+}
+
+.filter[data-cat="all"] {
+  grid-column: 1 / -1;
 }
 
 .filter.is-on {
@@ -244,23 +384,26 @@ a {
 .filter[data-cat="markets"].is-on { background: var(--markets); }
 .filter[data-cat="entertainment"].is-on { background: var(--entertainment); }
 
+.ghost-warn {
+  color: var(--warn);
+}
+
 #map {
   width: 100%;
-  height: 50vh;
-  min-height: 280px;
+  height: 46vh;
+  min-height: 260px;
 }
 
 .cards {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .card {
   border: 1px solid var(--line);
   background: #fff;
   border-radius: 16px;
-  padding: 14px;
-  cursor: pointer;
+  padding: 16px;
   text-align: left;
   font: inherit;
   color: inherit;
@@ -286,7 +429,7 @@ a {
 
 .card h3 {
   margin: 0;
-  font-size: 1.12rem;
+  font-size: 1.2rem;
   letter-spacing: -0.02em;
 }
 
@@ -298,6 +441,22 @@ a {
 
 .takeaway {
   margin: 0;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.card-actions .btn-dir {
+  margin-top: 0;
+  flex: 1 1 160px;
+}
+
+.card-actions .btn-quiet {
+  flex: 0 1 auto;
 }
 
 .badges {
@@ -339,6 +498,10 @@ a {
   background: #f4ead0;
   color: #6b4e16;
 }
+.badge-yours {
+  background: #e8e4f8;
+  color: #3c3480;
+}
 
 .confidence,
 .unnamed {
@@ -370,6 +533,25 @@ a {
   color: var(--entertainment);
 }
 
+.hidden-wrap {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+
+.hidden-wrap h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.hidden-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+}
+
 .tours {
   display: grid;
   gap: 8px;
@@ -381,6 +563,7 @@ a {
   border-radius: 14px;
   padding: 12px 14px;
   background: #fff;
+  min-height: var(--tap);
 }
 
 .tours span {
@@ -401,35 +584,39 @@ a {
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 14px;
+  border-radius: 16px;
   font-family: var(--font-ui);
 }
 
 .leaflet-popup-content {
-  margin: 12px 14px 14px;
-  min-width: 200px;
+  margin: 14px 16px 16px;
+  min-width: 240px;
 }
 
 .popup h3 {
   margin: 4px 0 6px;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
 }
 
 .popup p {
   margin: 0 0 8px;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .popup .walk {
   color: var(--ink-soft);
-  font-size: 13px;
+  font-size: 14px;
+}
+
+.popup .btn-dir {
+  margin-top: 8px;
 }
 
 .leaflet-control-zoom a {
-  width: 36px !important;
-  height: 36px !important;
-  line-height: 36px !important;
-  font-size: 18px !important;
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 20px !important;
 }
 
 .marker {
@@ -458,9 +645,31 @@ a {
 .marker-food { background: var(--food); }
 .marker-markets { background: var(--markets); }
 .marker-entertainment { background: var(--entertainment); }
+.marker-custom {
+  box-shadow: 0 0 0 3px rgba(60, 52, 128, 0.25);
+}
 .marker.is-closed {
   background: var(--closed);
   opacity: 0.8;
+}
+
+@media (min-width: 640px) {
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .filter[data-cat="all"] {
+    grid-column: auto;
+  }
+
+  .add-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .add-span {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (min-width: 900px) {
@@ -472,7 +681,8 @@ a {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
     grid-template-areas:
-      "route map"
+      "days map"
+      "add map"
       "places map"
       "skip tours";
     gap: 16px 20px;
@@ -480,7 +690,8 @@ a {
     padding-bottom: 48px;
   }
 
-  #route { grid-area: route; }
+  #days { grid-area: days; }
+  #add-place { grid-area: add; }
   .map-panel {
     grid-area: map;
     position: sticky;

@@ -27,10 +27,14 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 
 ## What’s on the page
 
-- Mobile-first layout: food walk first, then a full-width map, then the list
+- Three tappable days (Sol, Chamberí, Malasaña / Barceló) built from existing pins only
+- **Directions** on every card and map popup (Google Maps; no API key)
+- Notes, hide/show, and “Add a place” live in **this browser only** (`localStorage`) — nothing is written back to the repo
+- **Reset my edits** clears those local changes
+- Phone layout: day plan, then a full-width map (~46vh), then the list; huge filters
+- Desktop: two columns with a sticky map
 - Filters: Stay, Eat, Markets, See
 - Gold hotel pin for Thompson Madrid
-- Cards sync with pins
 - Tourist-heavy / busy-weekend badges where noted
 - Museo Sorolla marked **Closed** (expansion since Oct 2024)
 - Short skip note for Mercado de San Miguel
