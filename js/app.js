@@ -20,8 +20,9 @@
   const markers = new Map();
   let activeId = null;
   let activeFilter = "all";
-  let activeDay = days[0].id;
+  let openDayId = null;
   let edits = loadEdits();
+  let noteTarget = null;
 
   function loadEdits() {
     const empty = { notes: {}, hidden: [], custom: [], dayNotes: {} };
@@ -92,7 +93,7 @@
     return place.extraLinks
       .map(
         (l) =>
-          `<a class="card-link tap-link" href="${escapeHtml(l.href)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a>`
+          `<a class="site-link" href="${escapeHtml(l.href)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a>`
       )
       .join(" ");
   }
@@ -105,6 +106,30 @@
       return `<span class="badge badge-likely">Likely</span>`;
     }
     return "";
+  }
+
+  function hoursText(place) {
+    return place.hours || "Hours: check site";
+  }
+
+  function placeLink(place) {
+    if (place.link) return { href: place.link, label: place.linkLabel || "Site" };
+    if (place.address || place.name) {
+      const q = [place.name, place.address].filter(Boolean).join(" ");
+      return {
+        href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`,
+        label: "Google Maps",
+      };
+    }
+    return null;
+  }
+
+  function hoursLine(place) {
+    const site = placeLink(place);
+    const siteHtml = site
+      ? ` <a class="site-link" href="${escapeHtml(site.href)}" target="_blank" rel="noopener">${escapeHtml(site.label)}</a>`
+      : "";
+    return `<p class="hours-line">${escapeHtml(hoursText(place))}${siteHtml}</p>`;
   }
 
   function directionsUrl(place) {
@@ -123,6 +148,17 @@
     return `<a class="btn-dir" href="${escapeHtml(href)}" target="_blank" rel="noopener">Directions</a>`;
   }
 
+  function noteButton(kind, key) {
+    const has =
+      kind === "day" ? Boolean((edits.dayNotes[key] || "").trim()) : Boolean((edits.notes[key] || "").trim());
+    return `<button class="btn-note${has ? " has-note" : ""}" type="button" data-open-note="${escapeHtml(key)}" data-note-kind="${kind}">Note</button>`;
+  }
+
+  function photoHtml(place, className) {
+    if (!place.photo || !place.photo.src) return "";
+    return `<img class="${className}" src="${escapeHtml(place.photo.src)}" alt="${escapeHtml(place.photo.alt || place.name)}" loading="lazy" width="400" height="220" />`;
+  }
+
   function popupHtml(place) {
     const warn = touristLabel(place);
     const closed = place.closed ? `<span class="badge badge-closed">Closed</span>` : "";
@@ -130,8 +166,16 @@
     const yours = place.custom ? `<span class="badge badge-yours">Yours</span>` : "";
     const note = edits.notes[place.id];
     const blurb = place.confidenceNote || place.takeaway || "";
+    const credit = place.photo
+      ? `<p class="popup-credit"><a href="${escapeHtml(place.photo.page)}" target="_blank" rel="noopener">${escapeHtml(place.photo.credit)}</a>${place.photo.license ? " · " + escapeHtml(place.photo.license) : ""}</p>`
+      : "";
+    const hideBtn = place.custom
+      ? `<button class="btn-quiet" type="button" data-delete="${escapeHtml(place.id)}">Delete</button>`
+      : `<button class="btn-quiet" type="button" data-hide="${escapeHtml(place.id)}">Hide</button>`;
     return `
       <div class="popup">
+        ${photoHtml(place, "popup-photo")}
+        ${credit}
         <div class="badges">
           <span class="badge badge-cat ${place.category}">${CAT_LABEL[place.category] || place.category}</span>
           ${confidenceBadge(place)}
@@ -140,9 +184,17 @@
         </div>
         <h3>${escapeHtml(place.name)}</h3>
         <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
+        ${hoursLine(place)}
+        ${extraLinksHtml(place)}
         ${blurb ? `<p class="popup-blurb">${escapeHtml(blurb)}</p>` : ""}
+        ${shopList(place)}
+        ${place.unnamed ? `<p class="walk">${escapeHtml(place.unnamed)}</p>` : ""}
         ${note ? `<p class="walk">Note: ${escapeHtml(note)}</p>` : ""}
-        ${directionsButton(place)}
+        <div class="popup-actions">
+          ${directionsButton(place)}
+          ${noteButton("place", place.id)}
+        </div>
+        ${hideBtn}
       </div>
     `;
   }
@@ -196,9 +248,9 @@
         riseOnHover: true,
       });
       marker.bindPopup(popupHtml(place), {
-        maxWidth: 260,
-        minWidth: 180,
-        maxHeight: 168,
+        maxWidth: 280,
+        minWidth: 200,
+        maxHeight: 220,
         autoPan: true,
         autoPanPaddingTopLeft: [12, 12],
         autoPanPaddingBottomRight: [56, 64],
@@ -282,7 +334,7 @@
     const shown = visiblePlaces();
     const countEl = document.getElementById("places-count");
     const label = filter === "all" ? "all" : CAT_LABEL[filter] || filter;
-    countEl.textContent = `${shown.length} place${shown.length === 1 ? "" : "s"} · ${label}`;
+    countEl.textContent = `${shown.length} · ${label}`;
     if (!opts.skipFit) fitVisible(filter);
     map.invalidateSize();
   }
@@ -323,40 +375,29 @@
     wrap.innerHTML = visiblePlaces()
       .map((place) => {
         const warn = touristLabel(place);
-        const link = place.link
-          ? `<a class="card-link" href="${escapeHtml(place.link)}" target="_blank" rel="noopener">${escapeHtml(place.linkLabel || "Source")}</a>`
-          : "";
-        const note = edits.notes[place.id] || "";
-        const removeBtn = place.custom
-          ? `<button class="btn-quiet" type="button" data-delete="${escapeHtml(place.id)}">Delete</button>`
-          : `<button class="btn-quiet" type="button" data-hide="${escapeHtml(place.id)}">Hide</button>`;
+        const thumb = place.photo
+          ? photoHtml(place, "card-thumb")
+          : `<span class="card-thumb is-empty" aria-hidden="true"></span>`;
         return `
           <article class="card${place.closed ? " is-closed" : ""}${place.id === activeId ? " is-active" : ""}" data-id="${escapeHtml(place.id)}" tabindex="0">
-            <div class="card-top">
-              <h3>${escapeHtml(place.name)}</h3>
-              <div class="badges">
-                <span class="badge badge-cat ${place.category}">${CAT_LABEL[place.category] || place.category}</span>
-                ${confidenceBadge(place)}
-                ${place.custom ? `<span class="badge badge-yours">Yours</span>` : ""}
-                ${warn ? `<span class="badge badge-warn">${warn}</span>` : ""}
-                ${place.closed ? `<span class="badge badge-closed">Closed</span>` : ""}
+            ${thumb}
+            <div class="card-body">
+              <div class="card-top">
+                <h3>${escapeHtml(place.name)}</h3>
+                <div class="badges">
+                  ${place.custom ? `<span class="badge badge-yours">Yours</span>` : ""}
+                  ${warn ? `<span class="badge badge-warn">${warn}</span>` : ""}
+                  ${place.closed ? `<span class="badge badge-closed">Closed</span>` : ""}
+                  ${confidenceBadge(place)}
+                </div>
+              </div>
+              <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
+              ${hoursLine(place)}
+              <div class="card-actions">
+                ${directionsButton(place)}
+                ${noteButton("place", place.id)}
               </div>
             </div>
-            <p class="meta">${escapeHtml(place.neighborhood || "")}${place.walk ? " · " + escapeHtml(place.walk) : ""}</p>
-            ${place.confidenceNote ? `<p class="confidence">${escapeHtml(place.confidenceNote)}</p>` : ""}
-            <p class="takeaway">${escapeHtml(place.takeaway || "")}</p>
-            ${shopList(place)}
-            ${place.unnamed ? `<p class="unnamed">${escapeHtml(place.unnamed)}</p>` : ""}
-            ${link}
-            ${extraLinksHtml(place)}
-            <div class="card-actions">
-              <button class="btn-quiet" type="button" data-show-map="${escapeHtml(place.id)}">Show on map</button>
-              ${directionsButton(place)}
-              ${removeBtn}
-            </div>
-            <label class="note-label">Note on this phone
-              <textarea class="place-note" data-note-for="${escapeHtml(place.id)}" rows="2" placeholder="Hours, who liked it, what to order…">${escapeHtml(note)}</textarea>
-            </label>
           </article>
         `;
       })
@@ -386,43 +427,39 @@
   }
 
   function renderDays() {
-    const tabs = document.getElementById("day-tabs");
-    tabs.innerHTML = days
-      .map(
-        (day) => `
-        <button class="day-tab${day.id === activeDay ? " is-on" : ""}" type="button" role="tab" aria-selected="${day.id === activeDay}" data-day="${day.id}">
-          ${escapeHtml(day.title)}
-          <small>${escapeHtml(day.subtitle)}</small>
-        </button>`
-      )
-      .join("");
-    renderDaySlots();
-  }
-
-  function renderDaySlots() {
-    const day = days.find((d) => d.id === activeDay) || days[0];
-    document.getElementById("day-transit").textContent = day.transit;
-    const wrap = document.getElementById("day-slots");
-    wrap.innerHTML = day.slots
-      .map((slot) => {
-        const primary = findPlace(slot.placeId);
-        const alt = slot.altId ? findPlace(slot.altId) : null;
-        const noteKey = `${day.id}:${slot.id}`;
-        const picks = [primary, alt]
-          .filter(Boolean)
-          .map(
-            (p) =>
-              `<button class="pick" type="button" data-focus="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`
-          )
+    const wrap = document.getElementById("day-acc");
+    wrap.innerHTML = days
+      .map((day) => {
+        const open = day.id === openDayId;
+        const slots = day.slots
+          .map((slot) => {
+            const primary = findPlace(slot.placeId);
+            const alt = slot.altId ? findPlace(slot.altId) : null;
+            const noteKey = `${day.id}:${slot.id}`;
+            const picks = [primary, alt]
+              .filter(Boolean)
+              .map(
+                (p) =>
+                  `<button class="pick" type="button" data-focus="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`
+              )
+              .join("");
+            return `
+              <div class="day-slot" data-place-id="${escapeHtml(slot.placeId)}" data-alt-id="${escapeHtml(slot.altId || "")}">
+                <div class="day-slot__when">${escapeHtml(slot.when)}</div>
+                <p class="day-slot__text">${escapeHtml(slot.text)}</p>
+                <div class="day-slot__picks">${picks}${noteButton("day", noteKey)}</div>
+              </div>`;
+          })
           .join("");
         return `
-          <div class="day-slot" data-place-id="${escapeHtml(slot.placeId)}" data-alt-id="${escapeHtml(slot.altId || "")}">
-            <div class="day-slot__when">${escapeHtml(slot.when)}</div>
-            <p class="day-slot__text">${escapeHtml(slot.text)}</p>
-            <div class="day-slot__picks">${picks}</div>
-            <label class="note-label">Note for this slot
-              <textarea class="slot-note" data-day-note="${escapeHtml(noteKey)}" rows="2" placeholder="Only on this phone">${escapeHtml(edits.dayNotes[noteKey] || "")}</textarea>
-            </label>
+          <div class="day-item${open ? " is-open" : ""}" data-day="${day.id}">
+            <button class="day-item__head" type="button" aria-expanded="${open}" data-day-toggle="${day.id}">
+              <span>${escapeHtml(day.title)}<small>${escapeHtml(day.subtitle)}</small></span>
+            </button>
+            <div class="day-item__body"${open ? "" : " hidden"}>
+              <p class="transit">${escapeHtml(day.transit)}</p>
+              <div class="day-slots">${slots}</div>
+            </div>
           </div>`;
       })
       .join("");
@@ -441,32 +478,75 @@
       .join("");
   }
 
-  document.getElementById("day-tabs").addEventListener("click", (e) => {
-    const btn = e.target.closest(".day-tab");
-    if (!btn) return;
-    activeDay = btn.dataset.day;
-    renderDays();
-  });
+  function renderPhotoCredits() {
+    const seen = new Set();
+    const bits = [];
+    builtInPlaces.forEach((p) => {
+      if (!p.photo) return;
+      const key = p.photo.page || p.photo.src;
+      if (seen.has(key)) return;
+      seen.add(key);
+      bits.push(
+        `<a href="${escapeHtml(p.photo.page)}" target="_blank" rel="noopener">${escapeHtml(p.name)}</a>: ${escapeHtml(p.photo.credit)}${p.photo.license ? " (" + escapeHtml(p.photo.license) + ")" : ""}`
+      );
+    });
+    document.getElementById("photo-credits").innerHTML = bits.length
+      ? "Photo credits — " + bits.join(" · ")
+      : "";
+  }
 
-  document.getElementById("day-slots").addEventListener("click", (e) => {
-    if (e.target.closest("textarea")) return;
+  function openNoteSheet(key, kind, title) {
+    noteTarget = { key, kind };
+    const sheet = document.getElementById("note-sheet");
+    const area = document.getElementById("note-sheet-text");
+    document.getElementById("note-sheet-title").textContent = title || "Note";
+    area.value = kind === "day" ? edits.dayNotes[key] || "" : edits.notes[key] || "";
+    sheet.hidden = false;
+    area.focus();
+  }
+
+  function closeNoteSheet() {
+    document.getElementById("note-sheet").hidden = true;
+    noteTarget = null;
+  }
+
+  function saveNoteSheet() {
+    if (!noteTarget) return;
+    const value = document.getElementById("note-sheet-text").value;
+    if (noteTarget.kind === "day") {
+      edits.dayNotes[noteTarget.key] = value;
+      saveEdits();
+      renderDays();
+    } else {
+      edits.notes[noteTarget.key] = value;
+      saveEdits();
+      renderCards();
+      const marker = markers.get(noteTarget.key);
+      const place = findPlace(noteTarget.key);
+      if (marker && place) marker.setPopupContent(popupHtml(place));
+    }
+    closeNoteSheet();
+  }
+
+  document.getElementById("day-acc").addEventListener("click", (e) => {
+    const toggle = e.target.closest("[data-day-toggle]");
+    if (toggle) {
+      const id = toggle.dataset.dayToggle;
+      openDayId = openDayId === id ? null : id;
+      renderDays();
+      return;
+    }
     const pick = e.target.closest("[data-focus]");
     if (pick) {
       applyFilter("all", { skipFit: true });
       selectPlace(pick.dataset.focus);
       return;
     }
+    if (e.target.closest("[data-open-note]")) return;
     const slot = e.target.closest(".day-slot");
     if (!slot) return;
     applyFilter("all", { skipFit: true });
     selectPlace(slot.dataset.placeId);
-  });
-
-  document.getElementById("day-slots").addEventListener("input", (e) => {
-    const area = e.target.closest("[data-day-note]");
-    if (!area) return;
-    edits.dayNotes[area.dataset.dayNote] = area.value;
-    saveEdits();
   });
 
   function activateCard(card) {
@@ -476,36 +556,30 @@
   }
 
   document.getElementById("cards").addEventListener("click", (e) => {
-    const showBtn = e.target.closest("[data-show-map]");
-    if (showBtn) {
-      applyFilter("all", { skipFit: true });
-      selectPlace(showBtn.dataset.showMap);
-      return;
-    }
-    if (e.target.closest("a, textarea, button, label.note-label")) return;
+    if (e.target.closest("a, button")) return;
     const card = e.target.closest(".card");
     if (card) activateCard(card);
   });
   document.getElementById("cards").addEventListener("keydown", (e) => {
     if (e.key !== "Enter" && e.key !== " ") return;
-    if (e.target.closest("a, textarea, button")) return;
+    if (e.target.closest("a, button")) return;
     const card = e.target.closest(".card");
     if (!card) return;
     e.preventDefault();
     activateCard(card);
   });
 
-  document.getElementById("cards").addEventListener("input", (e) => {
-    const area = e.target.closest("[data-note-for]");
-    if (!area) return;
-    edits.notes[area.dataset.noteFor] = area.value;
-    saveEdits();
-    const marker = markers.get(area.dataset.noteFor);
-    const place = findPlace(area.dataset.noteFor);
-    if (marker && place) marker.setPopupContent(popupHtml(place));
-  });
-
-  document.getElementById("places").addEventListener("click", (e) => {
+  document.addEventListener("click", (e) => {
+    const noteBtn = e.target.closest("[data-open-note]");
+    if (noteBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const kind = noteBtn.dataset.noteKind || "place";
+      const key = noteBtn.dataset.openNote;
+      const title = kind === "day" ? "Note for this slot" : "Note";
+      openNoteSheet(key, kind, title);
+      return;
+    }
     const hideBtn = e.target.closest("[data-hide]");
     if (hideBtn) {
       const id = hideBtn.dataset.hide;
@@ -528,8 +602,10 @@
       rebuildMarkers();
       applyFilter(activeFilter, { skipFit: true });
       renderHidden();
-      return;
     }
+  });
+
+  document.getElementById("places").addEventListener("click", (e) => {
     const unhideBtn = e.target.closest("[data-unhide]");
     if (unhideBtn) {
       edits.hidden = edits.hidden.filter((x) => x !== unhideBtn.dataset.unhide);
@@ -540,6 +616,15 @@
     }
   });
 
+  document.getElementById("toggle-add").addEventListener("click", () => {
+    const form = document.getElementById("add-form");
+    const btn = document.getElementById("toggle-add");
+    const open = form.hidden;
+    form.hidden = !open;
+    btn.setAttribute("aria-expanded", String(open));
+    if (open) document.getElementById("add-name").focus();
+  });
+
   document.getElementById("add-form").addEventListener("submit", (e) => {
     e.preventDefault();
     const name = document.getElementById("add-name").value.trim();
@@ -547,7 +632,6 @@
     const address = document.getElementById("add-address").value.trim();
     const latRaw = document.getElementById("add-lat").value.trim();
     const lngRaw = document.getElementById("add-lng").value.trim();
-    const note = document.getElementById("add-note").value.trim();
     if (!name) return;
     const lat = latRaw === "" ? null : Number(latRaw);
     const lng = lngRaw === "" ? null : Number(lngRaw);
@@ -566,18 +650,29 @@
       address,
       lat,
       lng,
-      takeaway: note || "Added on this phone.",
+      hours: "Hours: check site",
+      takeaway: "Added on this phone.",
       custom: true,
     };
     edits.custom.push(place);
-    if (note) edits.notes[id] = note;
     saveEdits();
     e.target.reset();
     document.getElementById("add-category").value = "food";
+    document.getElementById("add-form").hidden = true;
+    document.getElementById("toggle-add").setAttribute("aria-expanded", "false");
     rebuildMarkers();
     applyFilter("all", { skipFit: true });
     renderHidden();
     selectPlace(id);
+  });
+
+  document.getElementById("note-sheet-save").addEventListener("click", saveNoteSheet);
+  document.getElementById("note-sheet-close").addEventListener("click", closeNoteSheet);
+  document.querySelector(".note-sheet__backdrop").addEventListener("click", closeNoteSheet);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !document.getElementById("note-sheet").hidden) {
+      closeNoteSheet();
+    }
   });
 
   document.getElementById("reset-view").addEventListener("click", () => {
@@ -617,6 +712,7 @@
   renderFilters();
   renderDays();
   renderTours();
+  renderPhotoCredits();
   rebuildMarkers();
   applyFilter("all");
   renderHidden();

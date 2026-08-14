@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Madrid trip guide — Thompson Madrid</title>
+    <title>Madrid pocket guide — Thompson Madrid</title>
     <meta
       name="description"
-      content="A practical Madrid neighborhood guide based at Thompson Madrid. Three easy days, markets, food, and Chamberí/Malasaña — not San Miguel."
+      content="A compact Madrid neighborhood guide based at Thompson Madrid. Three easy days, markets, food, and Chamberí/Malasaña — not San Miguel."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,25 +28,14 @@
 
     <header class="site-header">
       <p class="eyebrow">Madrid · Sol / Chamberí / Malasaña</p>
-      <h1>Three easy days from Thompson</h1>
-      <p class="lede">
-        Tap a meal slot to jump the map. Directions opens Google Maps. Notes stay on this phone only.
-      </p>
-      <div class="hotel-chip">
-        <span class="hotel-chip__label">Stay</span>
-        <strong>Thompson Madrid</strong>
-        <span>Plaza del Carmen · Sol / Gran Vía</span>
-        <a class="hotel-chip__link" href="https://www.hyatt.com/hotel/spain/thompson-madrid/madrp" target="_blank" rel="noopener">Hotel page</a>
-      </div>
+      <h1>Three days from Thompson</h1>
+      <p class="lede">Tap a slot or a row to jump the map. Notes stay on this phone.</p>
     </header>
 
     <main class="page">
-      <section class="panel" id="days">
+      <section class="panel panel-tight" id="days">
         <h2>Day plan</h2>
-        <p class="kicker">Existing pins only. Tap a slot — or the place name — to focus that pin.</p>
-        <div class="day-tabs" id="day-tabs" role="tablist" aria-label="Trip days"></div>
-        <p class="transit" id="day-transit"></p>
-        <div class="day-slots" id="day-slots"></div>
+        <div class="day-acc" id="day-acc"></div>
       </section>
 
       <section class="map-panel" id="map-panel" aria-label="Madrid map">
@@ -61,10 +50,15 @@
       </section>
       <button class="back-to-map" id="back-to-map" type="button" hidden>Back to map</button>
 
-      <section class="panel" id="add-place">
-        <h2>Add a place</h2>
-        <p class="kicker">Saved on this phone only. Built-in pins stay in the file; you can hide them.</p>
-        <form id="add-form" class="add-form">
+      <section class="panel panel-tight" id="places">
+        <div class="places-head">
+          <div>
+            <h2 id="places-heading">Places</h2>
+            <p class="kicker" id="places-count"></p>
+          </div>
+          <button class="ghost" id="toggle-add" type="button" aria-expanded="false" aria-controls="add-form">Add</button>
+        </div>
+        <form id="add-form" class="add-form" hidden>
           <label>
             Name
             <input id="add-name" name="name" type="text" required autocomplete="off" placeholder="Place name" />
@@ -90,18 +84,9 @@
             Longitude
             <input id="add-lng" name="lng" type="text" inputmode="decimal" placeholder="-3.70" />
           </label>
-          <label class="add-span">
-            Note (optional)
-            <textarea id="add-note" name="note" rows="2" placeholder="Only on this phone"></textarea>
-          </label>
-          <p class="form-hint add-span">Need a map pin? Add lat and lng. Address alone still gets Directions.</p>
+          <p class="form-hint add-span">Need a pin? Add lat and lng. Address alone still gets Directions. Saved on this phone only.</p>
           <button class="btn-primary add-span" type="submit">Add this place</button>
         </form>
-      </section>
-
-      <section class="panel" id="places">
-        <h2 id="places-heading">Places</h2>
-        <p class="kicker" id="places-count"></p>
         <div class="cards" id="cards"></div>
         <div id="hidden-wrap" class="hidden-wrap" hidden>
           <h3>Hidden</h3>
@@ -109,23 +94,36 @@
         </div>
       </section>
 
-      <section class="panel skip-box">
-        <h2>Skip</h2>
+      <details class="panel panel-tight fold" id="skip-panel">
+        <summary>Skip</summary>
         <p>Mercado de San Miguel — tourist food hall, not a local secret. Plaza Mayor is fine to walk through; it is not the point of this map.</p>
-      </section>
+      </details>
 
-      <section class="panel" id="tours-panel">
-        <h2>Paid tours</h2>
+      <details class="panel panel-tight fold" id="tours-panel">
+        <summary>Paid tours</summary>
         <p class="kicker">Optional. The days above cover the same neighborhoods. Unpublished stops are not listed.</p>
         <div class="tours" id="tours"></div>
-      </section>
+      </details>
     </main>
 
     <footer class="site-footer">
       <p>
-        Coordinates from listed research, Wikipedia, or OpenStreetMap. Walking times are rough from Thompson Madrid. Map: OpenStreetMap / CARTO. Your notes and added places never leave this browser.
+        Coordinates from listed research, Wikipedia, or OpenStreetMap. Walking times are rough from Thompson Madrid. Map: OpenStreetMap / CARTO. Hours from official, Turismo Madrid, or venue sites — if unknown, the page says check the link. Photos: Wikimedia Commons (see credits on each image). Your notes and added places never leave this browser.
       </p>
+      <p class="photo-credits" id="photo-credits"></p>
     </footer>
+
+    <div id="note-sheet" class="note-sheet" hidden>
+      <button class="note-sheet__backdrop" type="button" aria-label="Close note"></button>
+      <div class="note-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="note-sheet-title">
+        <h3 id="note-sheet-title">Note</h3>
+        <textarea id="note-sheet-text" rows="4" placeholder="Only on this phone"></textarea>
+        <div class="note-sheet__actions">
+          <button class="btn-primary" id="note-sheet-save" type="button">Save</button>
+          <button class="btn-quiet" id="note-sheet-close" type="button">Close</button>
+        </div>
+      </div>
+    </div>
 
     <script
       src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
