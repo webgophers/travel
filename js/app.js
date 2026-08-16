@@ -1,6 +1,7 @@
 (function () {
-  const { places: builtInPlaces, categories, map: mapConfig, days, tours } = window.GUIDE;
+  const { places: builtInPlaces, categories, barrios, map: mapConfig, days, tours } = window.GUIDE;
   const CAT_LABEL = Object.fromEntries(categories.map((c) => [c.id, c.label]));
+  const BARRIO_LABEL = Object.fromEntries((barrios || []).map((b) => [b.id, b.label]));
   const STORAGE_KEY = "madrid-guide-edits-v1";
 
   const map = L.map("map", {
@@ -20,6 +21,7 @@
   const markers = new Map();
   let activeId = null;
   let activeFilter = "all";
+  let activeBarrio = "all";
   let openDayId = null;
   let edits = loadEdits();
   let noteTarget = null;
@@ -185,6 +187,7 @@
         <h3>${escapeHtml(place.name)}</h3>
         <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
         ${hoursLine(place)}
+        ${place.use ? `<p class="use-line">${escapeHtml(place.use)}</p>` : ""}
         ${extraLinksHtml(place)}
         <div class="popup-actions">
           ${directionsButton(place)}
@@ -226,8 +229,87 @@
     return place.category === filter;
   }
 
+  function barrioOf(place) {
+    if (place.custom) return "other";
+    const n = (place.neighborhood || "").toLowerCase();
+    if (/sol|gran v[ií]a|behind gran/.test(n)) return "sol";
+    if (/malasaña|chueca|justicia|barceló|conde duque/.test(n)) return "malasana";
+    if (/chamberí|almagro|bilbao/.test(n)) return "chamberi";
+    return "other";
+  }
+
+  function matchesBarrio(place, barrio) {
+    if (barrio === "all") return true;
+    return barrioOf(place) === barrio;
+  }
+
+  function isShown(place) {
+    return matchesFilter(place, activeFilter) && matchesBarrio(place, activeBarrio);
+  }
+
   function visiblePlaces() {
-    return visibleCatalog().filter((p) => matchesFilter(p, activeFilter));
+    return visibleCatalog().filter(isShown);
+  }
+
+  function exportPlaces() {
+    return visibleCatalog().filter((p) => p.lat != null && p.lng != null && p.lat !== "" && p.lng !== "");
+  }
+
+  function xmlEscape(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function buildKml(list) {
+    const marks = list
+      .map((p) => {
+        const bits = [p.neighborhood, p.address, p.hours || "", p.use || "", p.takeaway || ""]
+          .filter(Boolean)
+          .join(" — ");
+        return `    <Placemark>
+      <name>${xmlEscape(p.name)}</name>
+      <description>${xmlEscape(bits)}</description>
+      <Point><coordinates>${Number(p.lng)},${Number(p.lat)},0</coordinates></Point>
+    </Placemark>`;
+      })
+      .join("\n");
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Madrid pocket guide</name>
+    <description>Existing pins from the Thompson Madrid pocket guide. Import into Google My Maps or Saved → Maps.</description>
+${marks}
+  </Document>
+</kml>
+`;
+  }
+
+  function googleMapsDirUrl(list) {
+    if (!list.length) return "https://www.google.com/maps/@40.4282,-3.7024,14z";
+    const path = list.map((p) => `${p.lat},${p.lng}`).join("/");
+    return `https://www.google.com/maps/dir/${path}`;
+  }
+
+  function refreshExportLinks() {
+    const list = exportPlaces();
+    const link = document.getElementById("open-gmaps");
+    if (link) link.href = googleMapsDirUrl(list);
+  }
+
+  function downloadKml() {
+    const list = exportPlaces();
+    const blob = new Blob([buildKml(list)], { type: "application/vnd.google-earth.kml+xml" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "madrid-pocket-guide.kml";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   }
 
   function clearMarkers() {
@@ -259,7 +341,7 @@
       });
       marker.on("click", () => selectPlace(place.id, { fromMap: true }));
       markers.set(place.id, marker);
-      if (matchesFilter(place, activeFilter)) marker.addTo(map);
+      if (isShown(place)) marker.addTo(map);
     });
   }
 
@@ -319,28 +401,42 @@
 
   function applyFilter(filter, opts = {}) {
     activeFilter = filter;
-    document.querySelectorAll(".filter").forEach((btn) => {
+    document.querySelectorAll("#filters .filter").forEach((btn) => {
       btn.classList.toggle("is-on", btn.dataset.cat === filter);
     });
+    applyVisibility(opts);
+  }
+
+  function applyBarrio(barrio, opts = {}) {
+    activeBarrio = barrio;
+    document.querySelectorAll("#barrios .filter").forEach((btn) => {
+      btn.classList.toggle("is-on", btn.dataset.barrio === barrio);
+    });
+    applyVisibility(opts);
+  }
+
+  function applyVisibility(opts = {}) {
     markers.forEach((marker, id) => {
       const place = findPlace(id);
-      if (place && matchesFilter(place, filter) && !isHidden(id)) {
+      if (place && isShown(place) && !isHidden(id)) {
         if (!map.hasLayer(marker)) marker.addTo(map);
       } else if (map.hasLayer(marker)) {
         map.removeLayer(marker);
       }
     });
     renderCards();
+    refreshExportLinks();
     const shown = visiblePlaces();
     const countEl = document.getElementById("places-count");
-    const label = filter === "all" ? "all" : CAT_LABEL[filter] || filter;
-    countEl.textContent = `${shown.length} · ${label}`;
-    if (!opts.skipFit) fitVisible(filter);
+    const cat = activeFilter === "all" ? "all" : CAT_LABEL[activeFilter] || activeFilter;
+    const hood = activeBarrio === "all" ? "all barrios" : BARRIO_LABEL[activeBarrio] || activeBarrio;
+    countEl.textContent = `${shown.length} · ${cat} · ${hood}`;
+    if (!opts.skipFit) fitVisible();
     map.invalidateSize();
   }
 
-  function fitVisible(filter) {
-    if (filter === "all") {
+  function fitVisible() {
+    if (activeFilter === "all" && activeBarrio === "all") {
       map.setView(mapConfig.center, mapConfig.zoom);
       return;
     }
@@ -368,6 +464,19 @@
       if (!btn) return;
       applyFilter(btn.dataset.cat);
     });
+    const hoods = document.getElementById("barrios");
+    const barrioItems = barrios && barrios.length ? barrios : [{ id: "all", label: "All" }];
+    hoods.innerHTML = barrioItems
+      .map(
+        (b) =>
+          `<button class="filter${b.id === "all" ? " is-on" : ""}" type="button" data-barrio="${b.id}">${b.label}</button>`
+      )
+      .join("");
+    hoods.addEventListener("click", (e) => {
+      const btn = e.target.closest(".filter");
+      if (!btn) return;
+      applyBarrio(btn.dataset.barrio);
+    });
   }
 
   function renderCards() {
@@ -391,6 +500,7 @@
               </div>
               <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
               ${hoursLine(place)}
+              ${place.use ? `<p class="use-line">${escapeHtml(place.use)}</p>` : ""}
               <div class="card-actions">
                 ${directionsButton(place)}
                 ${noteButton("place", place.id)}
@@ -673,8 +783,11 @@
     }
   });
 
+  document.getElementById("download-kml").addEventListener("click", downloadKml);
+
   document.getElementById("reset-view").addEventListener("click", () => {
-    applyFilter("all");
+    applyFilter("all", { skipFit: true });
+    applyBarrio("all");
     selectPlace("thompson");
   });
 

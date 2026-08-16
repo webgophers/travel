@@ -30,6 +30,12 @@
       <p class="eyebrow">Madrid · Sol / Chamberí / Malasaña</p>
       <h1>Three days from Thompson</h1>
       <p class="lede">Tap a slot or a row to jump the map. Notes stay on this phone.</p>
+      <ul class="rhythm" aria-label="Madrid meal times">
+        <li>Breakfast ~8–11</li>
+        <li>Vermouth / lunch ~13–16</li>
+        <li>Shops often close ~14–17</li>
+        <li>Dinner ~21+</li>
+      </ul>
     </header>
 
     <main class="page">
@@ -41,7 +47,10 @@
       <section class="map-panel" id="map-panel" aria-label="Madrid map">
         <div class="map-toolbar">
           <div class="filters" id="filters" role="toolbar" aria-label="Category filters"></div>
+          <div class="filters" id="barrios" role="toolbar" aria-label="Neighborhood filters"></div>
           <div class="map-actions">
+            <a class="ghost" id="open-gmaps" href="#" target="_blank" rel="noopener">Open in Google Maps</a>
+            <button class="ghost" id="download-kml" type="button">Download KML</button>
             <button class="ghost" id="reset-view" type="button">Reset map</button>
             <button class="ghost ghost-warn" id="reset-edits" type="button">Reset my edits</button>
           </div>

@@ -33,10 +33,13 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 - **Note** opens a small sheet (closed by default). Notes, hide/show, and “Add a place” live in **this browser only** (`localStorage`)
 - **Add** is a small control, not a form always on screen
 - Skip and paid tours sit in collapsed footers
-- Phone layout: day plan, then a full-width map (~40vh, sticky) plus **Back to map**; one scrollable filter row
+- Phone layout: day plan, then a full-width map (~40vh, sticky) plus **Back to map**; category and neighborhood chips stay on one scrollable row each
 - Tap a row to pan the map and open that pin (and the other way around)
 - Desktop: two columns with a sticky map
-- Filters: Stay, Eat, Markets, See
+- Filters: Stay, Eat, Markets, See — plus Sol, Chamberí, Malasaña/Chueca, Other
+- **Open in Google Maps** / **Download KML** from the current pins (built-in plus places added on this phone). Import the KML into Google My Maps or Saved → Maps
+- A one-line Madrid rhythm strip (breakfast / vermouth-lunch / shop siesta / dinner)
+- One-line “how to use” on a few tapas and market rows, taken from the existing takeaway — not new writeups
 - Gold hotel pin for Thompson Madrid
 - Tourist-heavy / busy-weekend / **Closed** / **likely** badges where noted
 - Museo Sorolla marked **Closed** (expansion since Oct 2024)
