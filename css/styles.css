@@ -92,6 +92,42 @@ a {
   font-size: 13px;
 }
 
+.rhythm {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.rhythm::-webkit-scrollbar {
+  display: none;
+}
+
+.rhythm li {
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.use-line {
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
 .page {
   display: flex;
   flex-direction: column;
@@ -416,11 +452,16 @@ textarea {
   border-color: transparent;
 }
 
-.filter[data-cat="all"].is-on { background: var(--ink); }
+.filter[data-cat="all"].is-on,
+.filter[data-barrio="all"].is-on { background: var(--ink); }
 .filter[data-cat="stay"].is-on { background: #8a7018; }
 .filter[data-cat="food"].is-on { background: var(--food); }
 .filter[data-cat="markets"].is-on { background: var(--markets); }
 .filter[data-cat="entertainment"].is-on { background: var(--entertainment); }
+.filter[data-barrio="sol"].is-on { background: #8a7018; }
+.filter[data-barrio="chamberi"].is-on { background: var(--markets); }
+.filter[data-barrio="malasana"].is-on { background: var(--food); }
+.filter[data-barrio="other"].is-on { background: var(--entertainment); }
 
 .ghost-warn {
   color: var(--warn);

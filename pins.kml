@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Madrid pocket guide</name>
+    <description>Built-in pins from the Thompson Madrid pocket guide. Import into Google My Maps.</description>
+    <Placemark>
+      <name>Thompson Madrid</name>
+      <description>Sol / Gran Vía</description>
+      <Point><coordinates>-3.70267,40.41857,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Mercado de Chamberí</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.69762,40.43622,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Mercado Barceló</name>
+      <description>Chueca / Justicia (Malasaña edge)</description>
+      <Point><coordinates>-3.69928,40.42681,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Aceitunas del Campo</name>
+      <description>Mercado Barceló</description>
+      <Point><coordinates>-3.69928,40.42681,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>La Comunal</name>
+      <description>Chueca / Justicia</description>
+      <Point><coordinates>-3.69735,40.42596,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Mercado de Vallehermoso</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.70834,40.43413,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Mercado de los Mostenses</name>
+      <description>Behind Gran Vía</description>
+      <Point><coordinates>-3.70906,40.42329,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>El Doble</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.69924,40.44136,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Bodega de La Ardosa</name>
+      <description>Malasaña</description>
+      <Point><coordinates>-3.70177,40.42377,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Casa Baranda</name>
+      <description>Malasaña</description>
+      <Point><coordinates>-3.70165,40.42376,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Casa Julio</name>
+      <description>Malasaña</description>
+      <Point><coordinates>-3.70366,40.42431,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Pez Tortilla</name>
+      <description>Malasaña</description>
+      <Point><coordinates>-3.70649,40.42425,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Churrería Madrid 1883</name>
+      <description>Malasaña</description>
+      <Point><coordinates>-3.70258,40.42514,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Taberna Ángel Sierra</name>
+      <description>Plaza Chueca</description>
+      <Point><coordinates>-3.69746,40.42302,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Casa Hortensia</name>
+      <description>Chueca / Justicia</description>
+      <Point><coordinates>-3.70043,40.42387,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Caja de Cerillas</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.70547,40.43617,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Sala de Despiece (SDD1)</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.69805,40.43757,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Taberna La Mina</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.70174,40.43483,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Café Comercial</name>
+      <description>Glorieta de Bilbao</description>
+      <Point><coordinates>-3.70197,40.42871,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Calle Ponzano crawl</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.69941,40.43767,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Andén 0 – Estación de Chamberí</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.69772,40.4323,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Frontón Beti Jai</name>
+      <description>Chamberí / Almagro</description>
+      <Point><coordinates>-3.69116,40.43067,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Museo Sorolla</name>
+      <description>Chamberí / Almagro</description>
+      <Point><coordinates>-3.69254,40.4354,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Museo Geominero</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.6996,40.4427,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Plaza de Olavide</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.7006,40.43305,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Teatros del Canal</name>
+      <description>Chamberí</description>
+      <Point><coordinates>-3.70506,40.43844,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Centro Cultural Conde Duque</name>
+      <description>Malasaña / Conde Duque</description>
+      <Point><coordinates>-3.71068,40.42785,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Museo de Historia de Madrid</name>
+      <description>Malasaña</description>
+      <Point><coordinates>-3.70076,40.42579,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Museo de Escultura al Aire Libre</name>
+      <description>Castellana / Rubén Darío</description>
+      <Point><coordinates>-3.68748,40.43303,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Gran Vía / Teatro district walk</name>
+      <description>Sol / Gran Vía</description>
+      <Point><coordinates>-3.70581,40.41986,0</coordinates></Point>
+    </Placemark>
+  </Document>
+</kml>
