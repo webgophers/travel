@@ -14,7 +14,7 @@
   --radius: 12px;
   --pad: clamp(12px, 3vw, 20px);
   --tap: 44px;
-  --map-phone-h: min(52vh, 400px);
+  --map-phone-h: min(52vh, 440px);
   --filter-bar-h: 52px;
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --font-ui: "Outfit", "Avenir Next", system-ui, sans-serif;
@@ -22,7 +22,7 @@
 
 @supports (height: 1dvh) {
   :root {
-    --map-phone-h: min(52dvh, 400px);
+    --map-phone-h: min(52dvh, 440px);
   }
 }
 
