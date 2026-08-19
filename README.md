@@ -36,7 +36,7 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 - Phone layout: day plan, then a full-width map (~40vh, sticky) plus **Back to map**; category and neighborhood chips stay on one scrollable row each
 - Tap a row to pan the map and open that pin (and the other way around)
 - Desktop: two columns with a sticky map
-- Filters: Stay, Eat, Markets, See — plus Sol, Chamberí, Malasaña/Chueca, Other
+- Filters: Stay, Eat, Markets, See — plus Sol, Chamberí, Malasaña/Chueca, La Latina, Other
 - **Open in Google Maps** / **Download KML** from the current pins (built-in plus places added on this phone). Import the KML into Google My Maps or Saved → Maps
 - A one-line Madrid rhythm strip (breakfast / vermouth-lunch / shop siesta / dinner)
 - One-line “how to use” on a few tapas and market rows, taken from the existing takeaway — not new writeups
