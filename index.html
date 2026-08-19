@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Madrid pocket guide — Thompson Madrid</title>
     <meta
       name="description"
@@ -46,14 +46,23 @@
 
       <section class="map-panel" id="map-panel" aria-label="Madrid map">
         <div class="map-toolbar">
-          <div class="filters" id="filters" role="toolbar" aria-label="Category filters"></div>
-          <div class="filters" id="barrios" role="toolbar" aria-label="Neighborhood filters"></div>
-          <div class="map-actions">
-            <a class="ghost" id="open-gmaps" href="#" target="_blank" rel="noopener">Open in Google Maps</a>
-            <button class="ghost" id="download-kml" type="button">Download KML</button>
-            <button class="ghost" id="reset-view" type="button">Reset map</button>
-            <button class="ghost ghost-warn" id="reset-edits" type="button">Reset my edits</button>
-          </div>
+          <details class="map-filters" id="map-filters">
+            <summary class="map-filters__summary">
+              <span class="map-filters__label">Filters</span>
+              <span class="map-filters__live" id="filter-summary" aria-live="polite">All · all barrios</span>
+            </summary>
+            <div class="map-filters__body">
+              <div class="filters" id="filters" role="toolbar" aria-label="Category filters"></div>
+              <div class="filters" id="barrios" role="toolbar" aria-label="Neighborhood filters"></div>
+              <div class="map-actions">
+                <a class="ghost" id="open-gmaps" data-gmaps href="#" target="_blank" rel="noopener">Open in Google Maps</a>
+                <button class="ghost" id="download-kml" type="button">Download KML</button>
+                <button class="ghost" id="reset-view" type="button">Reset map</button>
+                <button class="ghost ghost-warn" id="reset-edits" type="button">Reset my edits</button>
+              </div>
+            </div>
+          </details>
+          <a class="map-filters__maps" id="quick-gmaps" data-gmaps href="#" target="_blank" rel="noopener" aria-label="Open in Google Maps">Maps</a>
         </div>
         <div id="map" role="application" aria-label="Interactive map of recommended Madrid spots"></div>
       </section>
