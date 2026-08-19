@@ -297,8 +297,17 @@ ${marks}
 
   function refreshExportLinks() {
     const list = exportPlaces();
-    const link = document.getElementById("open-gmaps");
-    if (link) link.href = googleMapsDirUrl(list);
+    const href = googleMapsDirUrl(list);
+    document.querySelectorAll("[data-gmaps]").forEach((el) => {
+      el.href = href;
+    });
+  }
+
+  function updateFilterSummary() {
+    const cat = activeFilter === "all" ? "All" : CAT_LABEL[activeFilter] || activeFilter;
+    const hood = activeBarrio === "all" ? "all barrios" : BARRIO_LABEL[activeBarrio] || activeBarrio;
+    const el = document.getElementById("filter-summary");
+    if (el) el.textContent = `${cat} · ${hood}`;
   }
 
   function downloadKml() {
@@ -428,6 +437,7 @@ ${marks}
     });
     renderCards();
     refreshExportLinks();
+    updateFilterSummary();
     const shown = visiblePlaces();
     const countEl = document.getElementById("places-count");
     const cat = activeFilter === "all" ? "all" : CAT_LABEL[activeFilter] || activeFilter;
@@ -807,6 +817,23 @@ ${marks}
 
   const backToMap = document.getElementById("back-to-map");
   const mapPanel = document.getElementById("map-panel");
+  const filtersDetails = document.getElementById("map-filters");
+  const desktopMq = window.matchMedia("(min-width: 900px)");
+
+  function syncDesktopFilters() {
+    if (!filtersDetails) return;
+    if (desktopMq.matches) filtersDetails.open = true;
+    else filtersDetails.open = false;
+  }
+  if (desktopMq.addEventListener) desktopMq.addEventListener("change", syncDesktopFilters);
+  else if (desktopMq.addListener) desktopMq.addListener(syncDesktopFilters);
+  syncDesktopFilters();
+  if (filtersDetails) {
+    filtersDetails.addEventListener("toggle", () => {
+      window.setTimeout(() => map.invalidateSize(), 60);
+    });
+  }
+
   function goToMap() {
     mapPanel.scrollIntoView({ behavior: "smooth", block: "start" });
     window.setTimeout(() => map.invalidateSize(), 280);
