@@ -27,7 +27,7 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 
 ## What’s on the page
 
-- Three-day accordion (Sol, Chamberí, Malasaña / Barceló), **collapsed by default**, one day open at a time
+- Four-day accordion (Sol, Chamberí, Malasaña / Barceló, Sunday / La Latina), **collapsed by default**, one day open at a time
 - Compact place rows: name, neighborhood, hours, **Directions** + **Note**
 - Map popups hold the rest: photo (when we have a Commons file), hours, official or Maps link, badges, short blurb
 - **Note** opens a small sheet (closed by default). Notes, hide/show, and “Add a place” live in **this browser only** (`localStorage`)
