@@ -236,6 +236,7 @@
     if (/malasaña|chueca|justicia|barceló|conde duque|salesas|fernando vi/.test(n)) return "malasana";
     if (/chamberí|almagro|bilbao/.test(n)) return "chamberi";
     if (/latina|cava baja|rastro|cascorro|cebada/.test(n)) return "latina";
+    if (/recoletos|salamanca|ibiza|castelo|lista/.test(n)) return "other";
     return "other";
   }
 
