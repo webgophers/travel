@@ -235,6 +235,7 @@
     if (/sol|gran v[ií]a|behind gran/.test(n)) return "sol";
     if (/malasaña|chueca|justicia|barceló|conde duque/.test(n)) return "malasana";
     if (/chamberí|almagro|bilbao/.test(n)) return "chamberi";
+    if (/latina|cava baja|rastro|cascorro/.test(n)) return "latina";
     return "other";
   }
 
