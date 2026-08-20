@@ -879,6 +879,12 @@ textarea {
   color: var(--ink-soft);
 }
 
+.day-slot__why {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
 .hours-line a {
   color: var(--entertainment);
   font-weight: 600;
