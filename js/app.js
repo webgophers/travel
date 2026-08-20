@@ -1,8 +1,23 @@
 (function () {
-  const { places: builtInPlaces, categories, barrios, map: mapConfig, days, tours } = window.GUIDE;
-  const CAT_LABEL = Object.fromEntries(categories.map((c) => [c.id, c.label]));
+  const { places: builtInPlaces, categories, kinds, barrios, map: mapConfig, days, tours } = window.GUIDE;
+  const CAT_LABEL = Object.fromEntries((categories || []).map((c) => [c.id, c.label]));
+  const KIND_LIST = kinds && kinds.length ? kinds : [
+    { id: "food", label: "Food", icon: "🍽️" },
+    { id: "shopping", label: "Shopping", icon: "🛍️" },
+    { id: "sites", label: "Sites", icon: "🏛️" },
+    { id: "landmarks", label: "Landmarks", icon: "🌳" },
+  ];
+  const KIND_LABEL = Object.fromEntries(KIND_LIST.map((k) => [k.id, k.label]));
+  const KIND_ICON = Object.fromEntries(KIND_LIST.map((k) => [k.id, k.icon]));
   const BARRIO_LABEL = Object.fromEntries((barrios || []).map((b) => [b.id, b.label]));
   const STORAGE_KEY = "madrid-guide-edits-v1";
+  const PHONE_MQ = window.matchMedia("(max-width: 899px)");
+  const KIND_TO_CATEGORY = {
+    food: "food",
+    shopping: "markets",
+    sites: "entertainment",
+    landmarks: "entertainment",
+  };
 
   const map = L.map("map", {
     scrollWheelZoom: true,
@@ -20,7 +35,7 @@
 
   const markers = new Map();
   let activeId = null;
-  let activeFilter = "all";
+  let activeKind = PHONE_MQ.matches ? "food" : "all";
   let activeBarrio = "all";
   let openDayId = null;
   let edits = loadEdits();
@@ -71,11 +86,29 @@
     return allPlaces().filter((p) => !isHidden(p.id));
   }
 
+  function inferKind(place) {
+    if (place.kind) return place.kind;
+    if (place.category === "stay") return "landmarks";
+    if (place.category === "markets") return "shopping";
+    if (place.category === "entertainment") return "sites";
+    if (place.category === "food") return "food";
+    return "food";
+  }
+
   function touristLabel(place) {
     if (place.tourist === "heavy") return "Tourist-heavy";
     if (place.tourist === "soft") return "A bit touristy";
     if (place.tourist === "soft-weekends") return "Busy weekends";
     return "";
+  }
+
+  function whyBadge(place) {
+    if (place.closed) return { text: "Closed", cls: "badge-closed" };
+    if (place.tourist === "heavy") return { text: "Touristy", cls: "badge-warn" };
+    if (place.tourist === "soft" || place.tourist === "soft-weekends") return { text: "Touristy", cls: "badge-warn" };
+    if (/visitor-tested/i.test(place.takeaway || "")) return { text: "Loved", cls: "badge-loved" };
+    if (inferKind(place) === "shopping" && place.category === "markets") return { text: "Local", cls: "badge-local" };
+    return null;
   }
 
   function shopList(place) {
@@ -147,24 +180,7 @@
   function directionsButton(place) {
     const href = directionsUrl(place);
     if (!href) return "";
-    return `<a class="btn-dir" href="${escapeHtml(href)}" target="_blank" rel="noopener">Directions</a>`;
-  }
-
-  function mapsLink(place) {
-    const href = directionsUrl(place);
-    if (!href) return "";
-    return ` <a class="card-maps" href="${escapeHtml(href)}" target="_blank" rel="noopener">Maps</a>`;
-  }
-
-  function cardNoteButton(kind, key) {
-    const has =
-      kind === "day" ? Boolean((edits.dayNotes[key] || "").trim()) : Boolean((edits.notes[key] || "").trim());
-    return `<button class="card-note${has ? " has-note" : ""}" type="button" data-open-note="${escapeHtml(key)}" data-note-kind="${kind}">Note</button>`;
-  }
-
-  function cardSubline(place) {
-    const bits = [place.neighborhood, place.use || hoursText(place)].filter(Boolean);
-    return bits.join(" · ");
+    return `<a class="btn-dir" href="${escapeHtml(href)}" target="_blank" rel="noopener">Maps</a>`;
   }
 
   function noteButton(kind, key) {
@@ -173,9 +189,55 @@
     return `<button class="btn-note${has ? " has-note" : ""}" type="button" data-open-note="${escapeHtml(key)}" data-note-kind="${kind}">Note</button>`;
   }
 
+  function shortWalk(place) {
+    if (!place.walk) return "";
+    if (/you are here/i.test(place.walk)) return "You are here";
+    const mins = place.walk.match(/~\s*(\d+)\s*min/);
+    if (mins) return `${mins[1]} min walk`;
+    if (/few minutes/i.test(place.walk)) return "a few minutes";
+    return "";
+  }
+
+  function whereLine(place) {
+    const bits = [place.neighborhood, shortWalk(place)].filter(Boolean);
+    return bits.join(" · ");
+  }
+
+  function whyText(place) {
+    return place.why || place.use || "";
+  }
+
+  function formatCount(count) {
+    if (count == null) return "";
+    if (count >= 1000) {
+      const k = count / 1000;
+      const rounded = k >= 10 ? String(Math.round(k)) : k.toFixed(1).replace(/\.0$/, "");
+      return `${rounded}k`;
+    }
+    return String(count);
+  }
+
+  function ratingText(place) {
+    const r = place.rating;
+    if (!r || typeof r.score !== "number") return "";
+    const score = Number.isInteger(r.score) ? String(r.score) : r.score.toFixed(1);
+    const count = formatCount(r.count);
+    const source = r.source || "Google";
+    return count ? `${score} · ${count} ${source}` : `${score} · ${source}`;
+  }
+
   function photoHtml(place, className) {
     if (!place.photo || !place.photo.src) return "";
     return `<img class="${className}" src="${escapeHtml(place.photo.src)}" alt="${escapeHtml(place.photo.alt || place.name)}" loading="lazy" width="400" height="220" />`;
+  }
+
+  function visualBlock(place, className) {
+    const kind = inferKind(place);
+    const icon = KIND_ICON[kind] || "•";
+    const img = place.photo && place.photo.src
+      ? `<img class="${className}__img" src="${escapeHtml(place.photo.src)}" alt="${escapeHtml(place.photo.alt || place.name)}" loading="lazy" width="400" height="220" data-fallback />`
+      : "";
+    return `<div class="${className} ${className}--${escapeHtml(kind)}${img ? "" : " is-fallback"}">${img}<span class="${className}__icon" aria-hidden="true">${icon}</span></div>`;
   }
 
   function popupHtml(place) {
@@ -191,20 +253,23 @@
     const hideBtn = place.custom
       ? `<button class="btn-quiet" type="button" data-delete="${escapeHtml(place.id)}">Delete</button>`
       : `<button class="btn-quiet" type="button" data-hide="${escapeHtml(place.id)}">Hide</button>`;
+    const rating = ratingText(place);
+    const why = whyText(place);
     return `
       <div class="popup">
         ${photoHtml(place, "popup-photo")}
         ${credit}
         <div class="badges">
-          <span class="badge badge-cat ${place.category}">${CAT_LABEL[place.category] || place.category}</span>
+          <span class="badge badge-kind ${inferKind(place)}">${KIND_LABEL[inferKind(place)] || inferKind(place)}</span>
           ${confidenceBadge(place)}
           ${yours}
           ${warnBadge}${closed}
         </div>
         <h3>${escapeHtml(place.name)}</h3>
-        <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
+        <p class="meta">${escapeHtml(whereLine(place))}</p>
+        ${why ? `<p class="use-line">${escapeHtml(why)}</p>` : ""}
+        ${rating ? `<p class="rating-line">${escapeHtml(rating)}</p>` : ""}
         ${hoursLine(place)}
-        ${place.use ? `<p class="use-line">${escapeHtml(place.use)}</p>` : ""}
         ${extraLinksHtml(place)}
         <div class="popup-actions">
           ${directionsButton(place)}
@@ -240,10 +305,9 @@
     });
   }
 
-  function matchesFilter(place, filter) {
-    if (filter === "all") return true;
-    if (filter === "markets") return place.category === "markets" || Boolean(place.shops);
-    return place.category === filter;
+  function matchesKind(place, kind) {
+    if (kind === "all") return true;
+    return inferKind(place) === kind;
   }
 
   function barrioOf(place) {
@@ -263,7 +327,7 @@
   }
 
   function isShown(place) {
-    return matchesFilter(place, activeFilter) && matchesBarrio(place, activeBarrio);
+    return matchesKind(place, activeKind) && matchesBarrio(place, activeBarrio);
   }
 
   function visiblePlaces() {
@@ -285,7 +349,7 @@
   function buildKml(list) {
     const marks = list
       .map((p) => {
-        const bits = [p.neighborhood, p.address, p.hours || "", p.use || "", p.takeaway || ""]
+        const bits = [p.neighborhood, p.address, p.hours || "", p.why || p.use || "", p.takeaway || ""]
           .filter(Boolean)
           .join(" — ");
         return `    <Placemark>
@@ -321,7 +385,7 @@ ${marks}
   }
 
   function updateFilterSummary() {
-    const cat = activeFilter === "all" ? "All" : CAT_LABEL[activeFilter] || activeFilter;
+    const cat = activeKind === "all" ? "All" : KIND_LABEL[activeKind] || activeKind;
     const hood = activeBarrio === "all" ? "all barrios" : BARRIO_LABEL[activeBarrio] || activeBarrio;
     const el = document.getElementById("filter-summary");
     if (el) el.textContent = `${cat} · ${hood}`;
@@ -427,11 +491,25 @@ ${marks}
     }
   }
 
-  function applyFilter(filter, opts = {}) {
-    activeFilter = filter;
-    document.querySelectorAll("#filters .filter").forEach((btn) => {
-      btn.classList.toggle("is-on", btn.dataset.cat === filter);
+  function revealPlace(id, opts = {}) {
+    const place = findPlace(id);
+    if (!place) return;
+    const kind = inferKind(place);
+    if (activeKind !== "all" && kind !== activeKind) {
+      applyKind(kind, { skipFit: true });
+    }
+    selectPlace(id, opts);
+  }
+
+  function syncKindButtons() {
+    document.querySelectorAll("[data-kind]").forEach((btn) => {
+      btn.classList.toggle("is-on", btn.dataset.kind === activeKind);
     });
+  }
+
+  function applyKind(kind, opts = {}) {
+    activeKind = kind;
+    syncKindButtons();
     applyVisibility(opts);
   }
 
@@ -457,15 +535,16 @@ ${marks}
     updateFilterSummary();
     const shown = visiblePlaces();
     const countEl = document.getElementById("places-count");
-    const cat = activeFilter === "all" ? "all" : CAT_LABEL[activeFilter] || activeFilter;
+    const cat = activeKind === "all" ? "all" : KIND_LABEL[activeKind] || activeKind;
     const hood = activeBarrio === "all" ? "all barrios" : BARRIO_LABEL[activeBarrio] || activeBarrio;
-    countEl.textContent = `${shown.length} · ${cat} · ${hood}`;
+    countEl.textContent = `${shown.length} · ${cat}`;
+    if (activeBarrio !== "all") countEl.textContent += ` · ${hood}`;
     if (!opts.skipFit) fitVisible();
     map.invalidateSize();
   }
 
   function fitVisible() {
-    if (activeFilter === "all" && activeBarrio === "all") {
+    if (activeKind === "all" && activeBarrio === "all") {
       map.setView(mapConfig.center, mapConfig.zoom);
       return;
     }
@@ -479,19 +558,34 @@ ${marks}
     map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
   }
 
+  function renderKindTiles() {
+    const wrap = document.getElementById("kind-tiles");
+    if (!wrap) return;
+    wrap.innerHTML = KIND_LIST.map((k) => {
+      const on = k.id === activeKind ? " is-on" : "";
+      const img = k.photo
+        ? `<img src="${escapeHtml(k.photo)}" alt="${escapeHtml(k.photoAlt || k.label)}" loading="lazy" width="400" height="220" data-fallback />`
+        : "";
+      return `<button class="kind-tile kind-tile--${k.id}${on}" type="button" data-kind="${k.id}">
+        <span class="kind-tile__media${img ? "" : " is-fallback"}">${img}<span class="kind-tile__icon" aria-hidden="true">${k.icon}</span></span>
+        <span class="kind-tile__label">${escapeHtml(k.label)}</span>
+      </button>`;
+    }).join("");
+  }
+
   function renderFilters() {
     const wrap = document.getElementById("filters");
-    const items = [{ id: "all", label: "All" }, ...categories];
+    const items = [{ id: "all", label: "All" }, ...KIND_LIST];
     wrap.innerHTML = items
       .map(
         (c) =>
-          `<button class="filter${c.id === "all" ? " is-on" : ""}" type="button" data-cat="${c.id}">${c.label}</button>`
+          `<button class="filter${c.id === activeKind ? " is-on" : ""}" type="button" data-kind="${c.id}">${c.label}</button>`
       )
       .join("");
     wrap.addEventListener("click", (e) => {
       const btn = e.target.closest(".filter");
       if (!btn) return;
-      applyFilter(btn.dataset.cat);
+      applyKind(btn.dataset.kind);
     });
     const hoods = document.getElementById("barrios");
     const barrioItems = barrios && barrios.length ? barrios : [{ id: "all", label: "All" }];
@@ -512,31 +606,31 @@ ${marks}
     const wrap = document.getElementById("cards");
     wrap.innerHTML = visiblePlaces()
       .map((place) => {
-        const warn = touristLabel(place);
-        const thumb = place.photo ? photoHtml(place, "card-thumb") : "";
-        const catLabel = CAT_LABEL[place.category] || place.category;
+        const kind = inferKind(place);
+        const badge = whyBadge(place);
+        const rating = ratingText(place);
+        const why = whyText(place);
+        const where = whereLine(place);
         return `
-          <article class="card${place.photo ? " has-thumb" : ""}${place.closed ? " is-closed" : ""}${place.id === activeId ? " is-active" : ""}" data-id="${escapeHtml(place.id)}" tabindex="0">
-            ${thumb}
+          <article class="card${place.closed ? " is-closed" : ""}${place.id === activeId ? " is-active" : ""}" data-id="${escapeHtml(place.id)}" tabindex="0">
+            ${visualBlock(place, "card-visual")}
             <div class="card-body">
-              <div class="card-top">
-                <h3>${escapeHtml(place.name)}</h3>
-                ${cardNoteButton("place", place.id)}
-                <div class="badges">
-                  <span class="badge badge-cat ${escapeHtml(place.category)}">${escapeHtml(catLabel)}</span>
-                  ${place.custom ? `<span class="badge badge-yours">Yours</span>` : ""}
-                  ${warn ? `<span class="badge badge-warn">${warn}</span>` : ""}
-                  ${place.closed ? `<span class="badge badge-closed">Closed</span>` : ""}
-                  ${confidenceBadge(place)}
-                </div>
+              <h3>${escapeHtml(place.name)}</h3>
+              ${where ? `<p class="card-where">${escapeHtml(where)}</p>` : ""}
+              ${why ? `<p class="card-why">${escapeHtml(why)}</p>` : ""}
+              <div class="card-facts">
+                ${rating ? `<p class="card-rating">${escapeHtml(rating)}</p>` : ""}
+                ${badge ? `<span class="badge ${badge.cls}">${escapeHtml(badge.text)}</span>` : ""}
+                ${place.custom ? `<span class="badge badge-yours">Yours</span>` : ""}
               </div>
-              <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
-              ${hoursLine(place)}
-              ${place.use ? `<p class="use-line">${escapeHtml(place.use)}</p>` : ""}
-              <p class="card-sub">${escapeHtml(cardSubline(place))}${mapsLink(place)}</p>
-              <div class="card-actions">
-                ${directionsButton(place)}
-                ${noteButton("place", place.id)}
+              <button class="card-more" type="button" aria-expanded="false">More</button>
+              <div class="card-extra" hidden>
+                ${hoursLine(place)}
+                ${place.use && place.use !== why ? `<p class="use-line">${escapeHtml(place.use)}</p>` : ""}
+                <div class="card-actions">
+                  ${directionsButton(place)}
+                  ${noteButton("place", place.id)}
+                </div>
               </div>
             </div>
           </article>
@@ -577,18 +671,25 @@ ${marks}
             const primary = findPlace(slot.placeId);
             const alt = slot.altId ? findPlace(slot.altId) : null;
             const noteKey = `${day.id}:${slot.id}`;
-            const picks = [primary, alt]
+            const picks = [alt]
               .filter(Boolean)
               .map(
                 (p) =>
                   `<button class="pick" type="button" data-focus="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`
               )
               .join("");
+            const visual = primary ? visualBlock(primary, "day-visual") : `<div class="day-visual is-fallback"></div>`;
+            const hood = primary ? primary.neighborhood || "" : "";
+            const name = primary ? primary.name : slot.text;
             return `
               <div class="day-slot" data-place-id="${escapeHtml(slot.placeId)}" data-alt-id="${escapeHtml(slot.altId || "")}">
-                <div class="day-slot__when">${escapeHtml(slot.when)}</div>
-                <p class="day-slot__text">${escapeHtml(slot.text)}</p>
-                <div class="day-slot__picks">${picks}${noteButton("day", noteKey)}</div>
+                ${visual}
+                <div class="day-slot__copy">
+                  <div class="day-slot__when">${escapeHtml(slot.when)}</div>
+                  <p class="day-slot__name">${escapeHtml(name)}</p>
+                  ${hood ? `<p class="day-slot__hood">${escapeHtml(hood)}</p>` : ""}
+                  <div class="day-slot__picks">${picks}${noteButton("day", noteKey)}</div>
+                </div>
               </div>`;
           })
           .join("");
@@ -669,6 +770,15 @@ ${marks}
     closeNoteSheet();
   }
 
+  function bindKindClicks(root) {
+    if (!root) return;
+    root.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-kind]");
+      if (!btn || !root.contains(btn)) return;
+      applyKind(btn.dataset.kind);
+    });
+  }
+
   document.getElementById("day-acc").addEventListener("click", (e) => {
     const toggle = e.target.closest("[data-day-toggle]");
     if (toggle) {
@@ -679,24 +789,39 @@ ${marks}
     }
     const pick = e.target.closest("[data-focus]");
     if (pick) {
-      applyFilter("all", { skipFit: true });
-      selectPlace(pick.dataset.focus);
+      revealPlace(pick.dataset.focus);
       return;
     }
     if (e.target.closest("[data-open-note]")) return;
     const slot = e.target.closest(".day-slot");
     if (!slot) return;
-    applyFilter("all", { skipFit: true });
-    selectPlace(slot.dataset.placeId);
+    revealPlace(slot.dataset.placeId);
   });
 
   function activateCard(card) {
     if (!card || !card.dataset.id) return;
-    applyFilter("all", { skipFit: true });
-    selectPlace(card.dataset.id);
+    revealPlace(card.dataset.id);
+  }
+
+  function toggleCardMore(btn) {
+    const card = btn.closest(".card");
+    if (!card) return;
+    const extra = card.querySelector(".card-extra");
+    if (!extra) return;
+    const open = extra.hidden;
+    extra.hidden = !open;
+    btn.setAttribute("aria-expanded", String(open));
+    btn.textContent = open ? "Less" : "More";
   }
 
   document.getElementById("cards").addEventListener("click", (e) => {
+    const more = e.target.closest(".card-more");
+    if (more) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleCardMore(more);
+      return;
+    }
     if (e.target.closest("a, button")) return;
     const card = e.target.closest(".card");
     if (card) activateCard(card);
@@ -709,6 +834,14 @@ ${marks}
     e.preventDefault();
     activateCard(card);
   });
+
+  document.addEventListener("error", (e) => {
+    const img = e.target;
+    if (!img || img.tagName !== "IMG" || !img.hasAttribute("data-fallback")) return;
+    const wrap = img.closest(".card-visual, .kind-tile__media, .day-visual");
+    if (wrap) wrap.classList.add("is-fallback");
+    img.remove();
+  }, true);
 
   document.addEventListener("click", (e) => {
     const noteBtn = e.target.closest("[data-open-note]");
@@ -728,7 +861,7 @@ ${marks}
       saveEdits();
       if (activeId === id) activeId = null;
       rebuildMarkers();
-      applyFilter(activeFilter, { skipFit: true });
+      applyKind(activeKind, { skipFit: true });
       renderHidden();
       return;
     }
@@ -741,7 +874,7 @@ ${marks}
       saveEdits();
       if (activeId === id) activeId = null;
       rebuildMarkers();
-      applyFilter(activeFilter, { skipFit: true });
+      applyKind(activeKind, { skipFit: true });
       renderHidden();
     }
   });
@@ -752,7 +885,7 @@ ${marks}
       edits.hidden = edits.hidden.filter((x) => x !== unhideBtn.dataset.unhide);
       saveEdits();
       rebuildMarkers();
-      applyFilter(activeFilter, { skipFit: true });
+      applyKind(activeKind, { skipFit: true });
       renderHidden();
     }
   });
@@ -769,7 +902,7 @@ ${marks}
   document.getElementById("add-form").addEventListener("submit", (e) => {
     e.preventDefault();
     const name = document.getElementById("add-name").value.trim();
-    const category = document.getElementById("add-category").value;
+    const kind = document.getElementById("add-category").value;
     const address = document.getElementById("add-address").value.trim();
     const latRaw = document.getElementById("add-lat").value.trim();
     const lngRaw = document.getElementById("add-lng").value.trim();
@@ -786,12 +919,14 @@ ${marks}
     const place = {
       id,
       name,
-      category,
+      kind,
+      category: KIND_TO_CATEGORY[kind] || "food",
       neighborhood: "Added on this phone",
       address,
       lat,
       lng,
       hours: "Hours: check site",
+      why: "Added on this phone.",
       takeaway: "Added on this phone.",
       custom: true,
     };
@@ -802,7 +937,7 @@ ${marks}
     document.getElementById("add-form").hidden = true;
     document.getElementById("toggle-add").setAttribute("aria-expanded", "false");
     rebuildMarkers();
-    applyFilter("all", { skipFit: true });
+    applyKind(kind, { skipFit: true });
     renderHidden();
     selectPlace(id);
   });
@@ -819,7 +954,7 @@ ${marks}
   document.getElementById("download-kml").addEventListener("click", downloadKml);
 
   document.getElementById("reset-view").addEventListener("click", () => {
-    applyFilter("all", { skipFit: true });
+    applyKind(PHONE_MQ.matches ? "food" : "all", { skipFit: true });
     applyBarrio("all");
     selectPlace("thompson");
   });
@@ -832,7 +967,7 @@ ${marks}
     activeId = null;
     rebuildMarkers();
     renderDays();
-    applyFilter("all");
+    applyKind(PHONE_MQ.matches ? "food" : "all");
     renderHidden();
   });
 
@@ -870,12 +1005,15 @@ ${marks}
     io.observe(mapPanel);
   }
 
+  renderKindTiles();
+  bindKindClicks(document.getElementById("kind-tiles"));
+  bindKindClicks(document.getElementById("kind-all-row") || document.querySelector(".kind-all-row"));
   renderFilters();
   renderDays();
   renderTours();
   renderPhotoCredits();
   rebuildMarkers();
-  applyFilter("all");
+  applyKind(activeKind);
   renderHidden();
 
   const resize = () => map.invalidateSize();
