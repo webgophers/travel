@@ -37,7 +37,7 @@
   let activeId = null;
   let activeKind = PHONE_MQ.matches ? "food" : "all";
   let activeBarrio = "all";
-  let openDayId = null;
+  let openDayId = days && days[0] ? days[0].id : null;
   let edits = loadEdits();
   let noteTarget = null;
 
@@ -83,7 +83,7 @@
   }
 
   function visibleCatalog() {
-    return allPlaces().filter((p) => !isHidden(p.id));
+    return allPlaces().filter((p) => !isHidden(p.id) && !p.closed);
   }
 
   function inferKind(place) {
@@ -363,7 +363,7 @@
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <name>Madrid pocket guide</name>
-    <description>Existing pins from the Thompson Madrid pocket guide. Import into Google My Maps or Saved → Maps.</description>
+    <description>Existing pins from the Madrid pocket guide (Thompson then Montera). Import into Google My Maps or Saved → Maps.</description>
 ${marks}
   </Document>
 </kml>
@@ -681,6 +681,7 @@ ${marks}
             const visual = primary ? visualBlock(primary, "day-visual") : `<div class="day-visual is-fallback"></div>`;
             const hood = primary ? primary.neighborhood || "" : "";
             const name = primary ? primary.name : slot.text;
+            const why = slot.text || (primary ? whyText(primary) : "");
             return `
               <div class="day-slot" data-place-id="${escapeHtml(slot.placeId)}" data-alt-id="${escapeHtml(slot.altId || "")}">
                 ${visual}
@@ -688,6 +689,7 @@ ${marks}
                   <div class="day-slot__when">${escapeHtml(slot.when)}</div>
                   <p class="day-slot__name">${escapeHtml(name)}</p>
                   ${hood ? `<p class="day-slot__hood">${escapeHtml(hood)}</p>` : ""}
+                  ${why ? `<p class="day-slot__why">${escapeHtml(why)}</p>` : ""}
                   <div class="day-slot__picks">${picks}${noteButton("day", noteKey)}</div>
                 </div>
               </div>`;
@@ -956,6 +958,10 @@ ${marks}
   document.getElementById("reset-view").addEventListener("click", () => {
     applyKind(PHONE_MQ.matches ? "food" : "all", { skipFit: true });
     applyBarrio("all");
+    const stays = visibleCatalog().filter((p) => p.category === "stay" && p.lat != null && p.lng != null);
+    if (stays.length >= 2) {
+      map.fitBounds(L.latLngBounds(stays.map((p) => [p.lat, p.lng])), { padding: [80, 80], maxZoom: 16 });
+    }
     selectPlace("thompson");
   });
 

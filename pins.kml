@@ -2,11 +2,16 @@
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <name>Madrid pocket guide</name>
-    <description>Built-in pins from the Thompson Madrid pocket guide. Import into Google My Maps.</description>
+    <description>Built-in pins from the Madrid pocket guide (Thompson then Montera). Import into Google My Maps.</description>
     <Placemark>
       <name>Thompson Madrid</name>
-      <description>Sol / Gran Vía</description>
+      <description>Sol / Gran Vía · 22–30 Aug</description>
       <Point><coordinates>-3.70267,40.41857,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Hotel Montera Madrid</name>
+      <description>Sol / Gran Vía · 31 Aug–4 Sep</description>
+      <Point><coordinates>-3.7018955,40.4197707,0</coordinates></Point>
     </Placemark>
     <Placemark>
       <name>Mercado de Chamberí</name>
@@ -112,11 +117,6 @@
       <name>Frontón Beti Jai</name>
       <description>Chamberí / Almagro</description>
       <Point><coordinates>-3.69116,40.43067,0</coordinates></Point>
-    </Placemark>
-    <Placemark>
-      <name>Museo Sorolla</name>
-      <description>Chamberí / Almagro</description>
-      <Point><coordinates>-3.69254,40.4354,0</coordinates></Point>
     </Placemark>
     <Placemark>
       <name>Museo Geominero</name>
