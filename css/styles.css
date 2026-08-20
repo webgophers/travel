@@ -18,7 +18,7 @@
   --radius: 12px;
   --pad: clamp(12px, 3vw, 20px);
   --tap: 44px;
-  --map-phone-h: min(52vh, 440px);
+  --map-phone-h: min(36vh, 300px);
   --filter-bar-h: 52px;
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --font-ui: "Outfit", "Avenir Next", system-ui, sans-serif;
@@ -26,7 +26,7 @@
 
 @supports (height: 1dvh) {
   :root {
-    --map-phone-h: min(52dvh, 440px);
+    --map-phone-h: min(36dvh, 300px);
   }
 }
 
@@ -915,12 +915,11 @@ textarea {
 }
 
 .badge {
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0;
   font-weight: 700;
   border-radius: 999px;
-  padding: 3px 6px;
+  padding: 3px 8px;
   white-space: nowrap;
 }
 
@@ -1293,7 +1292,12 @@ textarea {
   }
 
   .kind-tile__media {
-    height: 76px;
+    height: 64px;
+  }
+
+  .kind-tile__label {
+    padding: 6px 8px 8px;
+    font-size: 15px;
   }
 
   .filter,
