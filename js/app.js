@@ -147,7 +147,12 @@
   function directionsButton(place) {
     const href = directionsUrl(place);
     if (!href) return "";
-    return `<a class="btn-dir" href="${escapeHtml(href)}" target="_blank" rel="noopener">Directions</a>`;
+    return `<a class="btn-dir" href="${escapeHtml(href)}" target="_blank" rel="noopener"><span class="btn-dir__long">Directions</span><span class="btn-dir__short">Dir</span></a>`;
+  }
+
+  function cardSubline(place) {
+    const bits = [place.neighborhood, place.use || hoursText(place)].filter(Boolean);
+    return bits.join(" · ");
   }
 
   function noteButton(kind, key) {
@@ -513,9 +518,12 @@ ${marks}
               <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
               ${hoursLine(place)}
               ${place.use ? `<p class="use-line">${escapeHtml(place.use)}</p>` : ""}
-              <div class="card-actions">
-                ${directionsButton(place)}
-                ${noteButton("place", place.id)}
+              <div class="card-row">
+                <p class="card-sub">${escapeHtml(cardSubline(place))}</p>
+                <div class="card-actions">
+                  ${directionsButton(place)}
+                  ${noteButton("place", place.id)}
+                </div>
               </div>
             </div>
           </article>
