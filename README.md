@@ -1,6 +1,6 @@
 # Madrid trip guide
 
-Static neighborhood map based at Thompson Madrid (Plaza del Carmen / Sol–Gran Vía). Chamberí, Malasaña, and nearby markets — not San Miguel. Built as a **pocket guide**: short rows, a collapsed day plan, and details on the map pin.
+Static neighborhood map based at Thompson Madrid (Plaza del Carmen / Sol–Gran Vía). Chamberí, Malasaña, and nearby markets — not San Miguel. Built as a **pocket guide**: four picture tiles (Food / Shopping / Sites / Landmarks), photo-first cards with a one-line why, a collapsed day plan, and details behind **More** or the map pin.
 
 ## Run locally
 
@@ -27,8 +27,10 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 
 ## What’s on the page
 
-- Four-day accordion (Sol, Chamberí, Malasaña / Barceló, Sunday / La Latina), **collapsed by default**, one day open at a time
-- Compact place rows: name, neighborhood, hours, **Directions** + **Note**
+- Four-day accordion (Sol, Chamberí, Malasaña / Barceló, Sunday / La Latina), **collapsed by default**, one day open at a time. Open slots show a tiny photo or color plus neighborhood — not a paragraph
+- Phone default is **Food**, not every pin. Four picture tiles switch groups; **All** is a chip, not the landing view
+- Place cards lead with a full-bleed photo (or a category color + icon if Commons has no file). Then name, neighborhood / walk, one short why, and a sourced rating when we have one
+- Hours, site link, Maps, and **Note** sit behind **More** (and still on the map popup)
 - Map popups hold the rest: photo (when we have a Commons file), hours, official or Maps link, badges, short blurb
 - **Note** opens a small sheet (closed by default). Notes, hide/show, and “Add a place” live in **this browser only** (`localStorage`)
 - **Add** is a small control, not a form always on screen
@@ -36,7 +38,7 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 - Phone layout: day plan, then a full-width map (~40vh, sticky) plus **Back to map**; category and neighborhood chips stay on one scrollable row each
 - Tap a row to pan the map and open that pin (and the other way around)
 - Desktop: two columns with a sticky map
-- Filters: Stay, Eat, Markets, See — plus Sol, Chamberí, Malasaña/Chueca, La Latina, Other (Recoletos / Salamanca / Ibiza stay on Other)
+- Filters: Food, Shopping, Sites, Landmarks — plus Sol, Chamberí, Malasaña/Chueca, La Latina, Other (Recoletos / Salamanca / Ibiza stay on Other). Map pins still use the old stay / eat / markets / see colors
 - **Open in Google Maps** / **Download KML** from the current pins (built-in plus places added on this phone). Import the KML into Google My Maps or Saved → Maps
 - A one-line Madrid rhythm strip (breakfast / vermouth-lunch / shop siesta / dinner)
 - One-line “how to use” on a few tapas and market rows, taken from the existing takeaway — not new writeups
@@ -53,7 +55,11 @@ Hours come from official venue pages, Turismo Madrid, or Ayuntamiento listings. 
 
 ## Photos
 
-At most one thumbnail per place. Only Wikimedia Commons files that can be hotlinked, with credit on the image and in the footer. Thompson Madrid has no freely licensable press/Commons photo, so it is skipped. No generated or stock stand-ins.
+At most one photo per place. Only Wikimedia Commons files that can be hotlinked, with credit on the image and in the footer. If there is no Commons file, the card uses a solid category color and a single icon — never a broken image. Thompson Madrid has no freely licensable press/Commons photo, so it uses that fallback. No generated or stock stand-ins.
+
+## Why and ratings
+
+Each place has a `why` line rewritten from the existing takeaway (about 12 words max). `rating` is only stored when a Google figure could be checked; obscure stalls are left unrated. Do not invent scores.
 
 ## Sources
 

@@ -20,16 +20,16 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin=""
     />
-    <link rel="stylesheet" href="css/styles.css?v=list2" />
+    <link rel="stylesheet" href="css/styles.css?v=visual1" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23c4a035' width='32' height='32' rx='8'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-size='16'%3E⌂%3C/text%3E%3C/svg%3E" />
   </head>
   <body>
     <a class="skip" href="#places">Skip to places</a>
 
     <header class="site-header">
-      <p class="eyebrow">Madrid · Sol / Chamberí / Malasaña / La Latina</p>
+      <p class="eyebrow">Madrid · Sol · Chamberí · Malasaña · La Latina</p>
       <h1>Four days from Thompson</h1>
-      <p class="lede">Tap a slot or a row to jump the map. Notes stay on this phone.</p>
+      <p class="lede">Tap a picture. That's the plan.</p>
       <ul class="rhythm" aria-label="Madrid meal times">
         <li>Breakfast ~8–11</li>
         <li>Vermouth / lunch ~13–16</li>
@@ -76,6 +76,10 @@
           </div>
           <button class="ghost" id="toggle-add" type="button" aria-expanded="false" aria-controls="add-form">Add</button>
         </div>
+        <div class="kind-tiles" id="kind-tiles" role="toolbar" aria-label="Place types"></div>
+        <div class="kind-all-row">
+          <button class="filter" id="kind-all" type="button" data-kind="all">All</button>
+        </div>
         <form id="add-form" class="add-form" hidden>
           <label>
             Name
@@ -84,10 +88,10 @@
           <label>
             Category
             <select id="add-category" name="category" required>
-              <option value="stay">Stay</option>
-              <option value="food" selected>Eat</option>
-              <option value="markets">Markets</option>
-              <option value="entertainment">See</option>
+              <option value="food" selected>Food</option>
+              <option value="shopping">Shopping</option>
+              <option value="sites">Sites</option>
+              <option value="landmarks">Landmarks</option>
             </select>
           </label>
           <label class="add-span">
@@ -149,6 +153,6 @@
       crossorigin=""
     ></script>
     <script src="js/data.js"></script>
-    <script src="js/app.js?v=list2"></script>
+    <script src="js/app.js?v=visual1"></script>
   </body>
 </html>
