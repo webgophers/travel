@@ -1110,8 +1110,9 @@ textarea {
 
   .day-item__head {
     min-height: 0;
-    padding: 8px 2px;
+    padding: 6px 2px;
     font-size: 14px;
+    line-height: 1.25;
   }
 
   .day-item.is-open .day-item__head {

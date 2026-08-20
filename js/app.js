@@ -153,7 +153,7 @@
   function mapsLink(place) {
     const href = directionsUrl(place);
     if (!href) return "";
-    return `<a class="card-maps" href="${escapeHtml(href)}" target="_blank" rel="noopener">Maps</a>`;
+    return ` <a class="card-maps" href="${escapeHtml(href)}" target="_blank" rel="noopener">Maps</a>`;
   }
 
   function cardNoteButton(kind, key) {
