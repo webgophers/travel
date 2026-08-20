@@ -27,9 +27,9 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 
 ## What’s on the page
 
-- Dated accordion **Sat 22 Aug–Thu 3 Sep** (13 days), **one day open at a time**. Each open day has 3–4 picture slots with a short why — not a 13-day wall
+- Dated accordion **Sat 22 Aug–Thu 3 Sep** (13 days), **one day open at a time**. Each open day has 3–4 picture slots with a short why — not a 13-day wall. **Wed 2 Sep** is a same-day Menorca beach trip (Platja d'es Grau), not a stay on the island. Flight times are a working pair and can shift — do not book from this page.
 - Walk notes say **from Thompson** through 30 Aug and **from Montera** from 31 Aug
-- Two stay pins: Thompson and Hotel Montera. Reset map prefers Thompson or fits both
+- Two stay pins: Thompson and Hotel Montera. Reset map prefers Thompson or fits both. One extra pin for **Platja d'es Grau** (Menorca). Far pins stay off the Madrid map fit and the Google Maps driving link.
 - Phone default is **Food**, not every pin. Four picture tiles switch groups; **All** is a chip, not the landing view
 - Place cards lead with a full-bleed photo (or a category color + icon if Commons has no file). Then name, neighborhood / walk, one short why, and a sourced rating when we have one
 - Hours, site link, Maps, and **Note** sit behind **More** (and still on the map popup)
@@ -40,7 +40,7 @@ Or set Source to **GitHub Actions** and re-run **Actions → Deploy GitHub Pages
 - Phone layout: day plan, then a full-width map (~40vh, sticky) plus **Back to map**; category and neighborhood chips stay on one scrollable row each
 - Tap a row to pan the map and open that pin (and the other way around)
 - Desktop: two columns with a sticky map
-- Filters: Food, Shopping, Sites, Landmarks — plus Sol, Chamberí, Malasaña/Chueca, La Latina, Other (Recoletos / Salamanca / Ibiza stay on Other). Map pins still use the old stay / eat / markets / see colors
+- Filters: Food, Shopping, Sites, Landmarks — plus Sol, Chamberí, Malasaña/Chueca, La Latina, Other (Recoletos / Salamanca / Ibiza, plus the Menorca day-trip pin). Map pins still use the old stay / eat / markets / see colors
 - **Open in Google Maps** / **Download KML** from the current pins (built-in plus places added on this phone). Import the KML into Google My Maps or Saved → Maps
 - A one-line Madrid rhythm strip (breakfast / vermouth-lunch / shop siesta / dinner)
 - One-line “how to use” on a few tapas and market rows, taken from the existing takeaway — not new writeups

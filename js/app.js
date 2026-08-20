@@ -313,12 +313,17 @@
   function barrioOf(place) {
     if (place.custom) return "other";
     const n = (place.neighborhood || "").toLowerCase();
+    if (/menorca|es grau/.test(n)) return "other";
     if (/sol|gran v[ií]a|behind gran/.test(n)) return "sol";
     if (/malasaña|chueca|justicia|barceló|conde duque|salesas|fernando vi/.test(n)) return "malasana";
     if (/chamberí|almagro|bilbao/.test(n)) return "chamberi";
     if (/latina|cava baja|rastro|cascorro|cebada/.test(n)) return "latina";
     if (/recoletos|salamanca|ibiza|castelo|lista/.test(n)) return "other";
     return "other";
+  }
+
+  function isFar(place) {
+    return Boolean(place && place.far);
   }
 
   function matchesBarrio(place, barrio) {
@@ -371,8 +376,9 @@ ${marks}
   }
 
   function googleMapsDirUrl(list) {
-    if (!list.length) return "https://www.google.com/maps/@40.4282,-3.7024,14z";
-    const path = list.map((p) => `${p.lat},${p.lng}`).join("/");
+    const local = list.filter((p) => !isFar(p));
+    if (!local.length) return "https://www.google.com/maps/@40.4282,-3.7024,14z";
+    const path = local.map((p) => `${p.lat},${p.lng}`).join("/");
     return `https://www.google.com/maps/dir/${path}`;
   }
 
@@ -548,7 +554,7 @@ ${marks}
       map.setView(mapConfig.center, mapConfig.zoom);
       return;
     }
-    const shown = visiblePlaces().filter((p) => p.lat != null && p.lng != null);
+    const shown = visiblePlaces().filter((p) => p.lat != null && p.lng != null && !isFar(p));
     if (!shown.length) return;
     if (shown.length === 1) {
       map.setView([shown[0].lat, shown[0].lng], 15);

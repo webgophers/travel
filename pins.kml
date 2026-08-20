@@ -153,5 +153,10 @@
       <description>Sol / Gran Vía</description>
       <Point><coordinates>-3.70581,40.41986,0</coordinates></Point>
     </Placemark>
+    <Placemark>
+      <name>Platja d'es Grau</name>
+      <description>Es Grau · Menorca day trip — same-day return from Madrid</description>
+      <Point><coordinates>4.2647872,39.9503925,0</coordinates></Point>
+    </Placemark>
   </Document>
 </kml>

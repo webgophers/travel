@@ -1451,6 +1451,36 @@ window.GUIDE = {
         page: "https://commons.wikimedia.org/wiki/File:Pastelería-El_Riojano-2009.jpg",
       },
     },
+    {
+      id: "es-grau",
+      name: "Platja d'es Grau",
+      category: "entertainment",
+      kind: "landmarks",
+      far: true,
+      why: "Shallow local beach. Day trip from Madrid.",
+      neighborhood: "Es Grau · Menorca day trip",
+      address: "Platja des Grau, 07700 Es Grau, Menorca",
+      lat: 39.9503925,
+      lng: 4.2647872,
+      takeaway:
+        "Same-day return from Madrid — not a stay on Menorca. Shallow family/local bay in S'Albufera des Grau. Not a party beach. Village lunch is next to the sand.",
+      use: "Beach day. Lunch in the village. Same-day return.",
+      link: "https://www.caib.es/sites/espaisnaturalsprotegits/es/parc_natural_de_salbufera_des_grau/",
+      linkLabel: "Parc Natural (CAIB)",
+      extraLinks: [
+        { href: "https://www.menorca.es/Contingut.aspx?IDIOMA=3&IdPub=16970", label: "menorca.es" },
+      ],
+      walk: "Taxi 20–25 min from MAH",
+      coordSource: "OSM way Platja es Grau /74001824",
+      hours: "Open beach. Village lunch hours vary — check on the day.",
+      photo: {
+        src: "https://commons.wikimedia.org/wiki/Special:FilePath/Es%20Grau%20de%20Menorca.jpg?width=400",
+        alt: "Bay at Es Grau, Menorca",
+        credit: "Songbird8 / Wikimedia Commons",
+        license: "CC BY-SA 4.0",
+        page: "https://commons.wikimedia.org/wiki/File:Es_Grau_de_Menorca.jpg",
+      },
+    },
   ],
   days: [
     {
@@ -1584,12 +1614,34 @@ window.GUIDE = {
     {
       id: "sep2",
       title: "Wed 2 Sep",
-      subtitle: "Hits not done",
-      transit: "Walk from Montera. Palace west; Chamberí is Metro.",
+      subtitle: "Menorca beach day trip",
+      transit:
+        "Same-day return from Hotel Montera — not a stay on Menorca. Leave ~4:45 for MAD T4. Taxi MAH ↔ Es Grau ~20–25 min. Flight times can shift — do not book.",
       slots: [
-        { id: "lunch", when: "Lunch", placeId: "botin", altId: "chamberi-market", text: "Botín if not booked. Or Chamberí market." },
-        { id: "see", when: "See", placeId: "palacio-real", altId: "el-doble", text: "Palace if still open on the list." },
-        { id: "evening", when: "Evening", placeId: "cava-baja", altId: "ardosa", text: "Latina or Malasaña leftover." },
+        {
+          id: "leave",
+          when: "~4:45 leave",
+          placeId: "montera",
+          text: "Taxi to T4. IB1711 MAD 06:50 → MAH 08:15. Working pair — times can shift; do not book.",
+        },
+        {
+          id: "beach",
+          when: "Beach",
+          placeId: "es-grau",
+          text: "Taxi 20–25 min from MAH. Shallow, local, nature park.",
+        },
+        {
+          id: "lunch",
+          when: "Lunch",
+          placeId: "es-grau",
+          text: "Lunch in the village. Keep it short.",
+        },
+        {
+          id: "return",
+          when: "Return",
+          placeId: "montera",
+          text: "Taxi to MAH. IB1722 20:35 → MAD ~22:10. Hotel late. Times can shift; do not book.",
+        },
       ],
     },
     {
