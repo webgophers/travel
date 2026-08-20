@@ -147,7 +147,19 @@
   function directionsButton(place) {
     const href = directionsUrl(place);
     if (!href) return "";
-    return `<a class="btn-dir" href="${escapeHtml(href)}" target="_blank" rel="noopener"><span class="btn-dir__long">Directions</span><span class="btn-dir__short">Dir</span></a>`;
+    return `<a class="btn-dir" href="${escapeHtml(href)}" target="_blank" rel="noopener">Directions</a>`;
+  }
+
+  function mapsLink(place) {
+    const href = directionsUrl(place);
+    if (!href) return "";
+    return ` <a class="card-maps" href="${escapeHtml(href)}" target="_blank" rel="noopener">Maps</a>`;
+  }
+
+  function cardNoteButton(kind, key) {
+    const has =
+      kind === "day" ? Boolean((edits.dayNotes[key] || "").trim()) : Boolean((edits.notes[key] || "").trim());
+    return `<button class="card-note${has ? " has-note" : ""}" type="button" data-open-note="${escapeHtml(key)}" data-note-kind="${kind}">Note</button>`;
   }
 
   function cardSubline(place) {
@@ -502,13 +514,16 @@ ${marks}
       .map((place) => {
         const warn = touristLabel(place);
         const thumb = place.photo ? photoHtml(place, "card-thumb") : "";
+        const catLabel = CAT_LABEL[place.category] || place.category;
         return `
           <article class="card${place.photo ? " has-thumb" : ""}${place.closed ? " is-closed" : ""}${place.id === activeId ? " is-active" : ""}" data-id="${escapeHtml(place.id)}" tabindex="0">
             ${thumb}
             <div class="card-body">
               <div class="card-top">
                 <h3>${escapeHtml(place.name)}</h3>
+                ${cardNoteButton("place", place.id)}
                 <div class="badges">
+                  <span class="badge badge-cat ${escapeHtml(place.category)}">${escapeHtml(catLabel)}</span>
                   ${place.custom ? `<span class="badge badge-yours">Yours</span>` : ""}
                   ${warn ? `<span class="badge badge-warn">${warn}</span>` : ""}
                   ${place.closed ? `<span class="badge badge-closed">Closed</span>` : ""}
@@ -518,12 +533,10 @@ ${marks}
               <p class="meta">${escapeHtml(place.neighborhood || "")}</p>
               ${hoursLine(place)}
               ${place.use ? `<p class="use-line">${escapeHtml(place.use)}</p>` : ""}
-              <div class="card-row">
-                <p class="card-sub">${escapeHtml(cardSubline(place))}</p>
-                <div class="card-actions">
-                  ${directionsButton(place)}
-                  ${noteButton("place", place.id)}
-                </div>
+              <p class="card-sub">${escapeHtml(cardSubline(place))}${mapsLink(place)}</p>
+              <div class="card-actions">
+                ${directionsButton(place)}
+                ${noteButton("place", place.id)}
               </div>
             </div>
           </article>
